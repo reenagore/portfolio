@@ -109,7 +109,7 @@ export default function FpoMethod() {
               </span>
             </div>
 
-            <h1 className="font-serif text-2xl font-bold leading-tight text-white md:text-4xl lg:text-5xl">
+            <h1 className=" text-2xl font-bold leading-tight text-white md:text-4xl lg:text-5xl">
               A framework that aligns{' '}
               <span className="relative inline-block">
                 <span className="relative z-10 text-[#FFD700]">finance, people, and operations</span>
@@ -159,7 +159,7 @@ export default function FpoMethod() {
                   Why It Exists
                 </span>
                 
-                <h2 className="font-serif text-2xl font-bold leading-tight text-black md:text-3xl lg:text-4xl">
+                <h2 className=" text-2xl font-bold leading-tight text-black md:text-3xl lg:text-4xl">
                   Because growth breaks where{' '}
                   <span className="relative inline-block">
                     <span className="relative z-10 text-[#FFD700]">alignment is weak</span>
