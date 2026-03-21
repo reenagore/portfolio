@@ -21,6 +21,12 @@ import Insights from "../pages/Insights";
 import Contact from "../pages/Contact";
 import TermsOfService from "../pages/Terms";
 import PrivacyPolicy from "../pages/Privacy";
+import LandingPagesIndex from "../components/admin/LandinPageIndex";
+import AdminLandingPagesList from "../pages/admin/AdminLandingPageList";
+import AdminLandingPageForm from "../components/admin/AdminLandingPageForm";
+import EventLandingPage from "../pages/admin/EventLanding";
+import ProductLandingPage from "../pages/ProductPage";
+import GalleryLandingPage from "../pages/Gallery";
 
 
 
@@ -38,6 +44,9 @@ export default function AppRoutes() {
         <Route path="/contact" element={<Contact/>}/>
         <Route path="/terms" element={<TermsOfService/>}/>
         <Route path="/privacy" element={<PrivacyPolicy/>}/>
+        <Route path="/events/:slug" element={<EventLandingPage />} />
+        <Route path="/products/:slug" element={<ProductLandingPage />} />
+        <Route path="/galleries/:slug" element={<GalleryLandingPage />} />
         <Route path="/payment/verify" element={<PaymentVerify />} />
       </Route>
 
@@ -54,6 +63,25 @@ export default function AppRoutes() {
           <Route path="/admin/podcasts" element={<AdminPodcasts />} />
           <Route path="/admin/podcasts/new" element={<AdminPodcastForm />} />
           <Route path="/admin/podcasts/:id/edit" element={<AdminPodcastForm />} />
+
+          <Route path="/admin/landing-pages" element={<LandingPagesIndex />} />
+          <Route
+            path="/admin/landing-pages/events"
+            element={<AdminLandingPagesList forcedType="event" />}
+          />
+          <Route
+            path="/admin/landing-pages/products"
+            element={<AdminLandingPagesList forcedType="product" />}
+          />
+          <Route
+            path="/admin/landing-pages/galleries"
+            element={<AdminLandingPagesList forcedType="gallery" />}
+          />
+          <Route path="/admin/landing-pages/new" element={<AdminLandingPageForm />} />
+          <Route
+            path="/admin/landing-pages/:id/edit"
+            element={<AdminLandingPageForm />}
+          />
         </Route>
       </Route>
 

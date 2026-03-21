@@ -16,6 +16,7 @@ const paymentRoutes = require("./routes/payment.routes");
 const notFound = require("./middleware/notFound.middleware");
 const errorHandler = require("./middleware/error.middleware");
 const { globalLimiter } = require("./middleware/rateLimit.middleware");
+const landingPageRoutes = require("./routes/landingPage.routes");
 
 const app = express();
 
@@ -66,6 +67,7 @@ app.use("/api/podcasts", podcastRoutes);
 app.use("/api/uploads", uploadRoutes);
 app.use("/api/bookings", bookingRoutes);
 app.use("/api/payments", paymentRoutes);
+app.use("/api/landing-pages", landingPageRoutes);
 
 app.use(notFound);
 app.use(errorHandler);

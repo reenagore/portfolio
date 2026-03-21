@@ -95,7 +95,7 @@ export default function AboutApproach() {
                  Practical execution.
               </h2>
 
-              <div className="mt-8 space-y-6 text-lg leading-relaxed text-indigo-900/80">
+              <div className="mt-8 space-y-6 text-l leading-relaxed text-indigo-900/80">
                 <p>
                   My approach is shaped by one belief: sustainable growth is
                   never built on energy alone. It is built on financial discipline,
@@ -116,7 +116,7 @@ export default function AboutApproach() {
 
                 <div className="rounded-xl border border-indigo-100 bg-white/50 p-6 backdrop-blur-sm">
                   <p className="text-lg font-medium text-black">
-                    "This thinking is what shaped the FPO Method™ — a framework that
+                    "This thinking is what shaped the FPO Method™, a framework that
                     brings finance, people, and operations into strategic alignment."
                   </p>
                 </div>

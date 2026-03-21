@@ -21,7 +21,7 @@ export default function HeroSection() {
         />
       </div>
 
-      <div className="mx-auto w-full max-w-7xl px-4 py-20 xs:py-10 sm:px-6 sm:py-8 md:py-10 lg:px-8 lg:py-15 xl:py-20">
+      <div className="mx-auto w-full max-w-7xl px-4 py-25 xs:py-10 sm:px-6 sm:py-8 md:py-10 lg:px-8 lg:py-15 xl:py-30">
         <div className="grid items-center gap-8 xs:gap-10 lg:grid-cols-2 lg:gap-12 xl:gap-20">
           
           {/* Left Content - Text Section */}
