@@ -16,7 +16,11 @@ const paymentRoutes = require("./routes/payment.routes");
 const notFound = require("./middleware/notFound.middleware");
 const errorHandler = require("./middleware/error.middleware");
 const { globalLimiter } = require("./middleware/rateLimit.middleware");
-const landingPageRoutes = require("./routes/landingPage.routes");
+const eventPageRoutes = require("./routes/event.routes");
+const productPageRoutes = require("./routes/product.routes");
+const galleryPageRoutes = require("./routes/gallery.routes");
+const programRegistrationRoutes = require("./routes/programRegistration.routes");
+const bookPreorderRoutes = require("./routes/preorder.routes");
 
 const app = express();
 
@@ -67,7 +71,12 @@ app.use("/api/podcasts", podcastRoutes);
 app.use("/api/uploads", uploadRoutes);
 app.use("/api/bookings", bookingRoutes);
 app.use("/api/payments", paymentRoutes);
-app.use("/api/landing-pages", landingPageRoutes);
+app.use("/api/events", eventPageRoutes);
+app.use("/api/products", productPageRoutes);
+app.use("/api/galleries", galleryPageRoutes);
+app.use("/api/program-registrations", programRegistrationRoutes);
+app.use("/api/book-preorders", bookPreorderRoutes);;
+
 
 app.use(notFound);
 app.use(errorHandler);

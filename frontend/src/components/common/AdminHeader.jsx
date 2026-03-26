@@ -39,6 +39,28 @@ const navItems = [
       </svg>
     )
   },
+
+  { 
+    name: "Book Preorders", 
+    path: "/admin/book-preorders",
+    icon: (isActive) => (
+      <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 12h8v8H7v-8z"></path>
+      </svg>
+    )
+  },
+
+
+  
+  { 
+    name: "Programs", 
+    path: "/admin/programs",
+    icon: (isActive) => (
+      <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 12h8v8H7v-8z"></path>
+      </svg>
+    )
+  },
   { 
     name: "Podcasts", 
     path: "/admin/podcasts",
@@ -48,53 +70,21 @@ const navItems = [
       </svg>
     )
   }
-];
-
-// Landing Pages submenu items
-const landingPagesSubmenu = [
-  { 
-    name: "All Pages", 
-    path: "/admin/landing-pages",
-    icon: (isActive) => (
-      <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z"></path>
-      </svg>
-    )
-  },
-  { 
-    name: "Events", 
-    path: "/admin/landing-pages/events",
-    icon: (isActive) => (
-      <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-      </svg>
-    )
-  },
-  { 
-    name: "Products", 
-    path: "/admin/landing-pages/products",
-    icon: (isActive) => (
-      <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
-      </svg>
-    )
-  },
-  { 
-    name: "Galleries", 
-    path: "/admin/landing-pages/galleries",
-    icon: (isActive) => (
-      <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-      </svg>
-    )
-  }
+  // { 
+  //   name: "Landing Pages", 
+  //   path: "/admin/landing-pages",
+  //   icon: (isActive) => (
+  //     <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+  //       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 12h8v8H7v-8z"></path>
+  //     </svg>
+  //   )
+  // }
 ];
 
 export default function AdminHeader() {
   const { admin, logout } = useAdminAuth();
   const navigate = useNavigate();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [landingPagesOpen, setLandingPagesOpen] = useState(false);
 
   const handleLogout = async () => {
     try {
@@ -107,10 +97,6 @@ export default function AdminHeader() {
 
   const toggleMobileMenu = () => {
     setMobileMenuOpen(!mobileMenuOpen);
-  };
-
-  const toggleLandingPages = () => {
-    setLandingPagesOpen(!landingPagesOpen);
   };
 
   return (
@@ -187,51 +173,6 @@ export default function AdminHeader() {
                 </NavLink>
               ))}
 
-              {/* Landing Pages Dropdown - Mobile */}
-              <div className="mt-2">
-                <button
-                  type="button"
-                  onClick={toggleLandingPages}
-                  className="flex w-full items-center justify-between rounded-lg px-4 py-3 text-sm font-medium text-indigo-900/70 transition-all duration-200 hover:bg-indigo-50 hover:text-black"
-                >
-                  <div className="flex items-center gap-3">
-                    <span className="text-indigo-400">
-                      <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 12h8v8H7v-8z"></path>
-                      </svg>
-                    </span>
-                    <span>Landing Pages</span>
-                  </div>
-                  <svg className={`h-4 w-4 transition-transform duration-200 ${landingPagesOpen ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path>
-                  </svg>
-                </button>
-                
-                {landingPagesOpen && (
-                  <div className="ml-7 mt-1 space-y-1 border-l border-indigo-200 pl-4">
-                    {landingPagesSubmenu.map((subItem) => (
-                      <NavLink
-                        key={subItem.path}
-                        to={subItem.path}
-                        onClick={() => setMobileMenuOpen(false)}
-                        className={({ isActive }) =>
-                          `flex items-center gap-2 rounded-lg px-4 py-2 text-sm transition-all duration-200 ${
-                            isActive
-                              ? "text-[#FFD700]"
-                              : "text-indigo-900/60 hover:text-black"
-                          }`
-                        }
-                      >
-                        <span className={({ isActive }) => isActive ? "text-[#FFD700]" : "text-indigo-400"}>
-                          {subItem.icon}
-                        </span>
-                        <span>{subItem.name}</span>
-                      </NavLink>
-                    ))}
-                  </div>
-                )}
-              </div>
-
               {/* Mobile Admin Info */}
               <div className="mt-4 border-t border-indigo-100 pt-4">
                 <div className="flex items-center gap-3 rounded-lg bg-indigo-50/50 p-3">
@@ -299,60 +240,24 @@ export default function AdminHeader() {
               )}
             </NavLink>
           ))}
-
-          {/* Landing Pages Dropdown - Desktop */}
-          <div className="mt-1">
-            <button
-              type="button"
-              onClick={toggleLandingPages}
-              className={`group flex w-full items-center justify-between rounded-lg px-4 py-3 text-sm font-medium transition-all duration-200 ${
-                landingPagesOpen
-                  ? "bg-gradient-to-r from-[#FFD700]/10 to-transparent text-[#FFD700]"
-                  : "text-indigo-900/70 hover:bg-indigo-50 hover:text-black"
-              }`}
-            >
-              <div className="flex items-center gap-3">
-                <span className={`transition-colors duration-200 ${landingPagesOpen ? "text-[#FFD700]" : "text-indigo-400 group-hover:text-[#FFD700]"}`}>
-                  <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 12h8v8H7v-8z"></path>
-                  </svg>
-                </span>
-                <span>Landing Pages</span>
-              </div>
-              <svg className={`h-4 w-4 transition-transform duration-200 ${landingPagesOpen ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path>
-              </svg>
-            </button>
-            
-            {landingPagesOpen && (
-              <div className="ml-7 mt-1 space-y-1 border-l border-indigo-200 pl-4">
-                {landingPagesSubmenu.map((subItem) => (
-                  <NavLink
-                    key={subItem.path}
-                    to={subItem.path}
-                    className={({ isActive }) =>
-                      `flex items-center gap-2 rounded-lg px-4 py-2 text-sm transition-all duration-200 ${
-                        isActive
-                          ? "text-[#FFD700]"
-                          : "text-indigo-900/60 hover:text-black"
-                      }`
-                    }
-                  >
-                    <span className={({ isActive }) => isActive ? "text-[#FFD700]" : "text-indigo-400"}>
-                      {subItem.icon}
-                    </span>
-                    <span>{subItem.name}</span>
-                  </NavLink>
-                ))}
-              </div>
-            )}
-          </div>
         </nav>
 
-        {/* Sidebar Footer with User Info and Logout */}
+        {/* Sidebar Footer with Logout */}
         <div className="absolute bottom-0 left-0 right-0 border-t border-indigo-100 bg-white/50 p-4">
-          {/* User Info Card */}
-          
+          {/* User Info */}
+          <div className="mb-4 rounded-lg bg-indigo-50/50 p-3">
+            <div className="flex items-center gap-2">
+              <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-[#FFD700]/20 to-indigo-900/20">
+                <span className="text-sm font-semibold text-black">
+                  {admin?.fullName?.charAt(0) || "R"}
+                </span>
+              </div>
+              <div className="flex-1 overflow-hidden">
+                <p className="truncate text-sm font-medium text-black">{admin?.fullName || "Admin User"}</p>
+                <p className="truncate text-xs text-indigo-900/50">{admin?.role || "Administrator"}</p>
+              </div>
+            </div>
+          </div>
 
           {/* Logout Button */}
           <button

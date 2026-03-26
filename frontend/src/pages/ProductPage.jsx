@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import { getPublicLandingPageBySlug } from "../services/landingPage.service";
+import { getPublicLandingPageBySlug } from "../services/events.service";
 import PurchaseModal from "../components/common/PurchaseModal";
 
 export default function ProductLandingPage() {

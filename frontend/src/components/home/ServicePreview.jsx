@@ -75,7 +75,7 @@ export default function ServicesPreview() {
               Advisory Services designed to move businesses{' '}
               <span className="relative inline-block">
                 <span className="relative z-10 text-[#FFD700]">from strain to structure</span>
-                <span className="absolute bottom-2 left-0 h-4 w-full bg-[#FFD700]/20 -z-0"></span>
+               
               </span>
               .
             </h2>

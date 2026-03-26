@@ -67,20 +67,7 @@ const outcomes = [
   "A framework leaders can use to scale with more confidence",
 ];
 
-const principles = [
-  {
-    title: "Systems Thinking",
-    description: "Every part of the business affects the whole. We analyze connections, not just symptoms."
-  },
-  {
-    title: "Practical Execution",
-    description: "Strategy must translate into action. We build frameworks leaders can actually use."
-  },
-  {
-    title: "Sustainable Growth",
-    description: "Growth shouldn't create chaos. We build foundations that scale with strength."
-  }
-];
+
 
 export default function FpoMethod() {
   return (
@@ -163,7 +150,7 @@ export default function FpoMethod() {
                   Because growth breaks where{' '}
                   <span className="relative inline-block">
                     <span className="relative z-10 text-[#FFD700]">alignment is weak</span>
-                    <span className="absolute bottom-2 left-0 h-4 w-full bg-[#FFD700]/20 -z-0"></span>
+                   
                   </span>
                 </h2>
 

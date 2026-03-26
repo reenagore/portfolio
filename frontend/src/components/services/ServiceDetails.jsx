@@ -24,7 +24,7 @@ const serviceDetails = [
   },
   {
     title: "FPO Method™ Implementation",
-    subtitle: "For businesses that need more than advice — they need structure.",
+    subtitle: "For businesses that need more than advice, they need structure.",
     forWho:
       "Best for businesses ready to strengthen the way finance, people, and operations work together.",
     includes: [

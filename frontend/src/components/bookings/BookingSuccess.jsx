@@ -115,11 +115,11 @@ export default function BookingSuccessCard({ payment }) {
           </button>
           
           <a
-            href="/dashboard"
+            href="/"
             className="group relative overflow-hidden rounded-lg bg-gradient-to-r from-indigo-900 to-black px-6 py-2 text-[#FFD700] transition-all duration-300 hover:shadow-lg hover:shadow-[#FFD700]/20"
           >
             <span className="relative z-10 flex items-center gap-2">
-              Go to dashboard
+              Go back
               <svg className="h-4 w-4 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M9 5l7 7-7 7"></path>
               </svg>

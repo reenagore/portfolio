@@ -133,10 +133,7 @@ const steps = [
           {/* Process Flow Visualization */}
           <div className="mt-16 flex flex-wrap items-center justify-center gap-4 p-6 rounded-2xl border border-indigo-100 bg-white/50 backdrop-blur-sm">
             <div className="flex items-center gap-3">
-              <span className="relative flex h-2 w-2">
-                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#FFD700] opacity-75"></span>
-                <span className="relative inline-flex h-2 w-2 rounded-full bg-[#FFD700]"></span>
-              </span>
+              
               <span className="text-sm text-indigo-900/60">Discovery → Diagnosis → Strategy → Execution</span>
             </div>
             <div className="h-4 w-px bg-indigo-200"></div>

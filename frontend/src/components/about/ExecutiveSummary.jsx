@@ -109,11 +109,7 @@ export default function AboutExecutiveSummary() {
                   </p>
   
                   <p>
-                    My value is not just technical knowledge. It
-                    is the ability to connect numbers, people, and operations into a
-                    clear business picture. I do not treat finance as an isolated
-                    function. I treats it as a decision engine that should guide how
-                    businesses scale, how leaders prioritize, and how teams execute.
+                  Beyond my professional work, I am a <span className="font-bold">Rotarian</span> with the <span className="font-bold">Rotary Club of Nairobi South</span> and an active member of <span className="font-bold">BNI Nairobi Pearl Charter</span>. These networks reflect my commitment to leadership, service, and building meaningful business relationships that extend beyond the boardroom.
                   </p>
                 </div>
   

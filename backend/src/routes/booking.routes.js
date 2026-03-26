@@ -134,8 +134,24 @@ const adminBookingUpdateValidationRules = [
     .withMessage("Internal notes cannot exceed 5000 characters"),
 ];
 
-router.post("/", contactLimiter, publicBookingValidationRules, validate, submitBooking);
+// Public route: submit a booking/request
+router.post(
+  "/",
+  contactLimiter,
+  publicBookingValidationRules,
+  validate,
+  submitBooking
+);
 
+// Admin route: get all bookings
+router.get(
+  "/",
+  protectAdmin,
+  authorizeRoles("super_admin", "editor"),
+  getAdminBookings
+);
+
+// Admin route: alternative endpoint for all bookings
 router.get(
   "/admin/all",
   protectAdmin,
@@ -143,6 +159,7 @@ router.get(
   getAdminBookings
 );
 
+// Admin route: get single booking by id
 router.get(
   "/admin/:id",
   protectAdmin,
@@ -150,6 +167,7 @@ router.get(
   getAdminBookingById
 );
 
+// Admin route: update booking status / notes
 router.patch(
   "/admin/:id",
   protectAdmin,
@@ -159,6 +177,7 @@ router.patch(
   updateBookingStatus
 );
 
+// Admin route: delete booking
 router.delete(
   "/admin/:id",
   protectAdmin,

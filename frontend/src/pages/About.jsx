@@ -2,6 +2,7 @@ import React, { useEffect } from 'react'
 import AboutHero from '../components/about/AboutHero'
 import AboutExecutiveSummary from '../components/about/ExecutiveSummary'
 import AboutApproach from '../components/about/Approach'
+import BookPreviewSection from '../components/about/BookPreview'
 
 const About = () => {
     useEffect(() => {
@@ -12,6 +13,7 @@ const About = () => {
       <AboutHero/>
       <AboutExecutiveSummary/>
       <AboutApproach/>
+      <BookPreviewSection/>
     </div>
   )
 }

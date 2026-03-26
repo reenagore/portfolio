@@ -6,7 +6,7 @@ export default function Booking() {
     window.scrollTo(0, 0);
 }, []);
   return (
-    <section className="relative mx-auto max-w-7xl px-4 py-16 md:py-24">
+    <section className="relative mx-auto max-w-7xl px-4 py-20 md:py-30">
       {/* Background decorative elements */}
       <div className="absolute inset-0 -z-10 overflow-hidden">
         <div className="absolute -left-1/4 top-0 h-96 w-96 rounded-full bg-indigo-900/5 blur-3xl"></div>
@@ -32,7 +32,7 @@ export default function Booking() {
             Start the{' '}
             <span className="relative inline-block">
               <span className="relative z-10 text-[#FFD700]">conversation</span>
-              <span className="absolute bottom-2 left-0 h-4 w-full bg-[#FFD700]/20 -z-0"></span>
+             
             </span>
             <br />
             with a structured advisory session

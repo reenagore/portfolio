@@ -103,7 +103,7 @@ export default function PodcastPreview() {
                 Conversations that translate complex business challenges{' '}
                 <span className="relative inline-block">
                   <span className="relative z-10 text-[#FFD700]">into practical clarity</span>
-                  <span className="absolute bottom-2 left-0 h-4 w-full bg-[#FFD700]/20 -z-0"></span>
+                 
                 </span>
                 .
               </h2>

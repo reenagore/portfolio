@@ -49,6 +49,7 @@ const bookingSchema = new mongoose.Schema(
         "Scaling SME",
         "Established Business",
         "Corporate / Institution",
+        "",
       ],
       default: "",
     },
@@ -60,6 +61,7 @@ const bookingSchema = new mongoose.Schema(
         "$500K - $2M",
         "$2M - $10M",
         "$10M+",
+        "",
       ],
       default: "",
     },
@@ -131,5 +133,7 @@ const bookingSchema = new mongoose.Schema(
     timestamps: true,
   }
 );
+
+bookingSchema.index({ createdAt: -1 });
 
 module.exports = mongoose.models.Booking || mongoose.model("Booking", bookingSchema);

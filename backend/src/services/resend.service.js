@@ -114,9 +114,119 @@ const sendUserBookingConfirmationEmail = async ({
   });
 };
 
+
+const sendAdminProgramRegistrationEmail = async ({
+  programTitle,
+  fullName,
+  email,
+  phone,
+  company,
+  role,
+  message,
+}) => {
+  return resend.emails.send({
+    from: env.resendFromEmail,
+    to: env.adminEmail,
+    subject: `New Program Registration: ${programTitle}`,
+    html: `
+      <div style="font-family: Arial, sans-serif; line-height: 1.6;">
+        <h2>New Program Registration</h2>
+        <p><strong>Program:</strong> ${programTitle}</p>
+        <p><strong>Name:</strong> ${fullName}</p>
+        <p><strong>Email:</strong> ${email}</p>
+        <p><strong>Phone:</strong> ${phone || "Not provided"}</p>
+        <p><strong>Company:</strong> ${company || "Not provided"}</p>
+        <p><strong>Role:</strong> ${role || "Not provided"}</p>
+        <hr />
+        <p><strong>Message:</strong></p>
+        <p>${message || "No message provided"}</p>
+      </div>
+    `,
+  });
+};
+
+const sendUserProgramRegistrationConfirmationEmail = async ({
+  fullName,
+  email,
+  programTitle,
+}) => {
+  return resend.emails.send({
+    from: env.resendFromEmail,
+    to: email,
+    subject: `Registration Received: ${programTitle}`,
+    html: `
+      <div style="font-family: Arial, sans-serif; line-height: 1.6;">
+        <p>Hello ${fullName},</p>
+        <p>Thank you for registering for <strong>${programTitle}</strong>.</p>
+        <p>Your registration has been received successfully. The team will review it and follow up with the next steps.</p>
+        <p>Best regards,<br />Reena Gore Team</p>
+      </div>
+    `,
+  });
+};
+
+
+// Pre-order details
+
+const sendAdminBookPreorderEmail = async ({
+  bookTitle,
+  fullName,
+  email,
+  phone,
+  company,
+  quantity,
+  amount,
+  paymentReference,
+}) => {
+  return resend.emails.send({
+    from: env.resendFromEmail,
+    to: env.adminEmail,
+    subject: `New Book Pre-order: ${bookTitle}`,
+    html: `
+      <div style="font-family: Arial, sans-serif; line-height: 1.6;">
+        <h2>New Book Pre-order</h2>
+        <p><strong>Book:</strong> ${bookTitle}</p>
+        <p><strong>Name:</strong> ${fullName}</p>
+        <p><strong>Email:</strong> ${email}</p>
+        <p><strong>Phone:</strong> ${phone || "Not provided"}</p>
+        <p><strong>Company:</strong> ${company || "Not provided"}</p>
+        <p><strong>Quantity:</strong> ${quantity}</p>
+        <p><strong>Amount:</strong> ${amount}</p>
+        <p><strong>Payment Reference:</strong> ${paymentReference || "Pending"}</p>
+      </div>
+    `,
+  });
+};
+
+const sendUserBookPreorderConfirmationEmail = async ({
+  fullName,
+  email,
+  bookTitle,
+  quantity,
+}) => {
+  return resend.emails.send({
+    from: env.resendFromEmail,
+    to: email,
+    subject: `Pre-order Received: ${bookTitle}`,
+    html: `
+      <div style="font-family: Arial, sans-serif; line-height: 1.6;">
+        <p>Hello ${fullName},</p>
+        <p>Thank you for pre-ordering <strong>${bookTitle}</strong>.</p>
+        <p>Your request for <strong>${quantity}</strong> copie(s) has been received successfully.</p>
+        <p>You will be contacted with updates regarding your pre-order.</p>
+        <p>Best regards,<br />Reena Gore Team</p>
+      </div>
+    `,
+  });
+};
+
 module.exports = {
   sendAdminContactEmail,
   sendUserConfirmationEmail,
   sendAdminBookingEmail,
   sendUserBookingConfirmationEmail,
+  sendAdminProgramRegistrationEmail,
+  sendUserProgramRegistrationConfirmationEmail,
+  sendUserBookPreorderConfirmationEmail,
+  sendAdminBookPreorderEmail
 };

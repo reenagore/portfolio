@@ -1,3 +1,4 @@
+const mongoose = require("mongoose");
 const Booking = require("../models/Booking");
 const ApiError = require("../utils/ApiError");
 const asyncHandler = require("../utils/asyncHandler");
@@ -6,6 +7,9 @@ const {
   sendAdminBookingEmail,
   sendUserBookingConfirmationEmail,
 } = require("../services/resend.service");
+
+const escapeRegex = (value = "") =>
+  value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 
 const submitBooking = asyncHandler(async (req, res) => {
   const body = sanitizeValue(req.body);
@@ -54,7 +58,7 @@ const submitBooking = asyncHandler(async (req, res) => {
       }),
     ]);
   } catch (emailError) {
-    console.error("Booking email sending failed:", emailError.message);
+    console.error("Booking email sending failed:", emailError);
   }
 
   res.status(201).json({
@@ -80,11 +84,13 @@ const getAdminBookings = asyncHandler(async (req, res) => {
   if (service) query.service = service;
 
   if (search) {
+    const escapedSearch = escapeRegex(search);
+
     query.$or = [
-      { fullName: { $regex: search, $options: "i" } },
-      { email: { $regex: search, $options: "i" } },
-      { company: { $regex: search, $options: "i" } },
-      { challengeSummary: { $regex: search, $options: "i" } },
+      { fullName: { $regex: escapedSearch, $options: "i" } },
+      { email: { $regex: escapedSearch, $options: "i" } },
+      { company: { $regex: escapedSearch, $options: "i" } },
+      { challengeSummary: { $regex: escapedSearch, $options: "i" } },
     ];
   }
 
@@ -93,7 +99,11 @@ const getAdminBookings = asyncHandler(async (req, res) => {
   const skip = (safePage - 1) * safeLimit;
 
   const [bookings, total] = await Promise.all([
-    Booking.find(query).sort({ createdAt: -1 }).skip(skip).limit(safeLimit),
+    Booking.find(query)
+      .select("-__v")
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(safeLimit),
     Booking.countDocuments(query),
   ]);
 
@@ -110,7 +120,11 @@ const getAdminBookings = asyncHandler(async (req, res) => {
 });
 
 const getAdminBookingById = asyncHandler(async (req, res) => {
-  const booking = await Booking.findById(req.params.id);
+  if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+    throw new ApiError(400, "Invalid booking ID");
+  }
+
+  const booking = await Booking.findById(req.params.id).select("-__v");
 
   if (!booking) {
     throw new ApiError(404, "Booking not found");
@@ -123,6 +137,10 @@ const getAdminBookingById = asyncHandler(async (req, res) => {
 });
 
 const updateBookingStatus = asyncHandler(async (req, res) => {
+  if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+    throw new ApiError(400, "Invalid booking ID");
+  }
+
   const booking = await Booking.findById(req.params.id);
 
   if (!booking) {
@@ -133,22 +151,22 @@ const updateBookingStatus = asyncHandler(async (req, res) => {
 
   if (body.status) {
     booking.status = body.status;
+
+    if (body.status === "contacted" && !booking.contactedAt) {
+      booking.contactedAt = new Date();
+    }
+
+    if (body.status === "scheduled" && !booking.scheduledAt) {
+      booking.scheduledAt = new Date();
+    }
+
+    if (body.status === "closed" && !booking.closedAt) {
+      booking.closedAt = new Date();
+    }
   }
 
   if (body.internalNotes !== undefined) {
     booking.internalNotes = body.internalNotes;
-  }
-
-  if (body.status === "contacted" && !booking.contactedAt) {
-    booking.contactedAt = new Date();
-  }
-
-  if (body.status === "scheduled" && !booking.scheduledAt) {
-    booking.scheduledAt = new Date();
-  }
-
-  if (body.status === "closed" && !booking.closedAt) {
-    booking.closedAt = new Date();
   }
 
   await booking.save();
@@ -161,6 +179,10 @@ const updateBookingStatus = asyncHandler(async (req, res) => {
 });
 
 const deleteBooking = asyncHandler(async (req, res) => {
+  if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+    throw new ApiError(400, "Invalid booking ID");
+  }
+
   const booking = await Booking.findById(req.params.id);
 
   if (!booking) {

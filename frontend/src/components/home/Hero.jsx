@@ -40,7 +40,7 @@ export default function HeroSection() {
                 Build a business that{" "}
                 <span className="relative inline-block">
                   <span className="relative z-10 text-[#FFD700]">performs</span>
-                  <span className="absolute bottom-1 left-0 -z-0 h-2 w-full bg-[#FFD700]/20 xs:h-2.5 sm:h-3 md:bottom-1.5 md:h-3.5 lg:bottom-2 lg:h-4" />
+                  
                 </span>{" "}
                 with clarity, discipline, and financial control.
               </h1>
@@ -131,7 +131,7 @@ export default function HeroSection() {
                   Reena Gore
                 </p>
                 <p className="text-sm font-semibold xs:text-base sm:text-lg md:text-xl lg:text-2xl">
-                  Financial Systems Strategist
+                Financial Systems Strategist | Podcast Host | Author
                 </p>
               </div>
             </div>

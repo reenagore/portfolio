@@ -35,10 +35,10 @@ export default function BookingForm() {
 
   const getAmountByService = (service) => {
     const pricing = {
-      "Profit Pulse Audit": 250,
-      "FPO Method Implementation": 500,
-      "Executive & Corporate Programs": 750,
-      "Strategy Consultation": 100,
+      "Profit Pulse Audit": 1500,
+      "FPO Method Implementation": 2500,
+      "Executive & Corporate Programs": 2000,
+      "Strategy Consultation": 2500,
     };
 
     return pricing[service] || 100;
@@ -49,17 +49,19 @@ export default function BookingForm() {
     setLoading(true);
     setError("");
     setStepMessage("Submitting your consultation request...");
-
+  
     try {
       const bookingRes = await submitBooking(formData);
-      const bookingId = bookingRes?.data?.id;
+        console.log("BOOKING RESPONSE:", bookingRes);
 
-      if (!bookingId) {
-        throw new Error("Booking created but booking ID was not returned.");
-      }
+        const bookingId = bookingRes?.data?.id;
+        console.log("BOOKING ID:", bookingId);
 
+        if (!bookingId) {
+          throw new Error("Booking created but booking ID was not returned.");
+        }
       setStepMessage("Initializing payment...");
-
+  
       const paymentRes = await initializePayment({
         email: formData.email,
         fullName: formData.fullName,
@@ -69,9 +71,12 @@ export default function BookingForm() {
         service: formData.service,
         bookingId,
       });
-
+      
+      console.log("PAYMENT RESPONSE:", paymentRes);
+      
       const authorizationUrl = paymentRes?.data?.authorizationUrl;
-
+      console.log("AUTH URL:", authorizationUrl);
+      
       if (!authorizationUrl) {
         throw new Error("Payment initialized but authorization URL is missing.");
       }
@@ -82,12 +87,12 @@ export default function BookingForm() {
         err.response?.data?.message ||
         err.message ||
         "Something went wrong while submitting your booking.";
+  
       setError(message);
       setLoading(false);
       setStepMessage("");
     }
   };
-
   return (
     <div className="rounded-2xl border border-indigo-100 bg-white p-6 shadow-lg shadow-indigo-500/5">
       {/* Header with golden accent */}
@@ -96,7 +101,7 @@ export default function BookingForm() {
           Book a{' '}
           <span className="relative inline-block">
             <span className="relative z-10 text-[#FFD700]">Consultation</span>
-            <span className="absolute bottom-1 left-0 h-3 w-full bg-[#FFD700]/20 -z-0"></span>
+           
           </span>
         </h2>
         <p className="mt-2 text-sm text-indigo-900/70">
