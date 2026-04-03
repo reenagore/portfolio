@@ -88,7 +88,7 @@ export default function AboutApproach() {
               <h2 className="font-serif text-2xl font-bold leading-tight text-black md:text-3xl">
                 Clear thinking.{' '}
                 <span className="relative inline-block">
-                  <span className="relative z-10 text-[#FFD700]">Strong systems.</span>
+                  <span className="relative z-10 text-amber-400">Strong systems.</span>
                  
                 </span>{' '}
                 <br/>
@@ -178,7 +178,7 @@ export default function AboutApproach() {
             <div className="space-y-4">
               {/* FPO Method Header */}
               <div className="mb-4 text-center">
-                <span className="inline-block rounded-full bg-[#FFD700]/10 px-4 py-2 text-sm font-medium text-[#FFD700]">
+                <span className="inline-block rounded-full bg-amber-400/10 px-4 py-2 text-sm font-medium text-[#FFD700]">
                   The FPO Method™
                 </span>
               </div>
@@ -192,7 +192,7 @@ export default function AboutApproach() {
                     key={index}
                     className="group relative flex items-start gap-3 rounded-lg border border-indigo-100 bg-white/50 p-4 backdrop-blur-sm transition-all duration-200 hover:border-[#FFD700]"
                   >
-                    <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg bg-[#FFD700]/10 text-[#FFD700]">
+                    <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg bg-[#FFD700]/10 text-amber-400">
                       {principle.icon}
                     </div>
                     <div>

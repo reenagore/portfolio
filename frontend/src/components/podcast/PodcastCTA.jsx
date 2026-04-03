@@ -35,7 +35,7 @@ export default function PodcastCTA() {
             {/* Decorative line */}
             <div className="flex items-center gap-3 mb-6">
               <div className="h-px w-12 bg-gradient-to-r from-transparent to-[#FFD700]"></div>
-              <p className="text-sm font-semibold uppercase tracking-[0.25em] text-[#FFD700]">
+              <p className="text-sm font-semibold uppercase tracking-[0.25em] text-amber-400">
                 Continue the conversation
               </p>
               <div className="h-px w-12 bg-gradient-to-l from-transparent to-[#FFD700]"></div>
@@ -58,7 +58,7 @@ export default function PodcastCTA() {
             <div className="mt-8 flex flex-col gap-4 sm:flex-row">
               <Link
                 to="/booking"
-                className="group inline-flex items-center justify-center rounded-xl bg-[#FFD700] px-6 py-3 text-sm font-medium text-black transition-all duration-300 hover:shadow-lg hover:shadow-[#FFD700]/20 md:px-8 md:py-4"
+                className="group inline-flex items-center justify-center rounded-xl bg-amber-400 px-6 py-3 text-sm font-medium text-black transition-all duration-300 hover:shadow-lg hover:shadow-[#FFD700]/20 md:px-8 md:py-4"
               >
                 <span className="relative z-10 flex items-center gap-2">
                   Book a Consultation

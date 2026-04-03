@@ -36,7 +36,7 @@ export default function AboutPreview() {
               <h2 className="font-serif text-2xl font-bold leading-tight text-black md:text-4xl">
                 Strategic finance leadership{' '}
                 <span className="relative inline-block">
-                  <span className="relative z-10 text-[#FFD700]">rooted in execution</span>
+                  <span className="relative z-10 text-amber-400">rooted in execution</span>
                   
                 </span>
                 , not theory.
@@ -55,7 +55,7 @@ export default function AboutPreview() {
                   and operational strain, bringing together financial discipline,
                   systems thinking, and execution alignment through the{' '}
                   <span className="relative inline-block">
-                    <span className="relative z-10 font-semibold text-[#FFD700]">FPO Method™</span>
+                    <span className="relative z-10 font-semibold text-amber-400">FPO Method™</span>
                     <span className="absolute bottom-0 left-0 h-2 w-full bg-[#FFD700]/20 -z-0"></span>
                   </span>
                   .
@@ -99,7 +99,7 @@ export default function AboutPreview() {
                 <div className="absolute inset-0 bg-gradient-to-br from-[#FFD700]/5 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100"></div>
                 <div className="relative">
                   <div className="mb-4 flex h-7 w-7 items-center justify-center rounded-xl bg-gradient-to-br from-[#FFD700]/20 to-indigo-900/20">
-                    <svg className="h-4 w-4 text-[#FFD700]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className="h-4 w-4 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
                   </div>
@@ -117,11 +117,11 @@ export default function AboutPreview() {
                 <div className="absolute inset-0 bg-gradient-to-br from-[#FFD700]/5 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100"></div>
                 <div className="relative">
                   <div className="mb-4 flex h-7 w-7 items-center justify-center rounded-xl bg-gradient-to-br from-[#FFD700]/20 to-indigo-900/20">
-                    <svg className="h-4 w-4 text-[#FFD700]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className="h-4 w-4 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
                     </svg>
                   </div>
-                  <p className="text-2xl font-bold text-[#FFD700]">SAP FI</p>
+                  <p className="text-2xl font-bold text-amber-400">SAP FI</p>
                   <p className="mt-2 text-sm leading-6 text-indigo-900/70">
                     Deep expertise in financial systems and structured reporting
                   </p>
@@ -134,11 +134,11 @@ export default function AboutPreview() {
                 <div className="absolute inset-0 bg-gradient-to-br from-[#FFD700]/5 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100"></div>
                 <div className="relative">
                   <div className="mb-4 flex h-7 w-7 items-center justify-center rounded-xl bg-gradient-to-br from-[#FFD700]/20 to-indigo-900/20">
-                    <svg className="h-4 w-4 text-[#FFD700]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className="h-4 w-4 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
                     </svg>
                   </div>
-                  <p className="text-2xl font-bold text-[#FFD700]">50+</p>
+                  <p className="text-2xl font-bold text-amber-400">50+</p>
                   <p className="mt-2 text-sm leading-6 text-indigo-900/70">
                     CEOs and leadership teams engaged through strategic work
                   </p>
@@ -151,11 +151,11 @@ export default function AboutPreview() {
                 <div className="absolute inset-0 bg-gradient-to-br from-[#FFD700]/5 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100"></div>
                 <div className="relative">
                   <div className="mb-4 flex h-7 w-7 items-center justify-center rounded-xl bg-gradient-to-br from-[#FFD700]/20 to-indigo-900/20">
-                    <svg className="h-4 w-4 text-[#FFD700]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className="h-4 w-4 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
                     </svg>
                   </div>
-                  <p className="text-2xl font-bold text-[#FFD700]">$40M+</p>
+                  <p className="text-2xl font-bold text-amber-400">$40M+</p>
                   <p className="mt-2 text-sm leading-6 text-indigo-900/70">
                     Growth journeys supported through stronger systems and controls
                   </p>

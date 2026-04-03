@@ -39,7 +39,7 @@ export default function HeroSection() {
               <h1 className="font-serif text-2xl font-bold leading-[1.1] text-black xs:text-2xl sm:text-3xl md:text-4xl lg:text-5xl">
                 Build a business that{" "}
                 <span className="relative inline-block">
-                  <span className="relative z-10 text-[#FFD700]">performs</span>
+                  <span className="relative z-10 text-amber-400">performs</span>
                   
                 </span>{" "}
                 with clarity, discipline, and financial control.
@@ -56,7 +56,7 @@ export default function HeroSection() {
               <div className="mt-5 flex flex-col gap-3 xs:mt-6 xs:gap-4 sm:mt-7 sm:flex-row sm:flex-wrap md:mt-8">
                 <Link
                   to="/booking"
-                  className="group relative inline-flex w-full items-center justify-center overflow-hidden rounded-lg bg-gradient-to-r from-indigo-900 to-black px-4 py-3 text-sm font-medium text-[#FFD700] transition-all duration-300 hover:shadow-lg hover:shadow-[#FFD700]/20 xs:rounded-xl xs:px-5 sm:w-auto sm:px-6 sm:py-3.5 md:px-8 md:py-4 md:text-base"
+                  className="group relative inline-flex w-full items-center justify-center overflow-hidden rounded-lg bg-gradient-to-r from-indigo-900 to-black px-4 py-3 text-sm font-medium text-amber-400 transition-all duration-300 hover:shadow-lg hover:shadow-[#FFD700]/20 xs:rounded-xl xs:px-5 sm:w-auto sm:px-6 sm:py-3.5 md:px-8 md:py-4 md:text-base"
                 >
                   <span className="relative z-10 flex items-center justify-center gap-2">
                     <span className="hidden xs:inline">Book a Strategy Consultation</span>
@@ -127,7 +127,7 @@ export default function HeroSection() {
               
               {/* Image Caption - Responsive positioning and sizing */}
               <div className="absolute bottom-0 left-0 right-0 p-3 text-white xs:p-4 sm:p-5 md:p-6">
-                <p className="text-[10px] font-medium uppercase tracking-[0.15em] text-[#FFD700] xs:text-[11px] sm:text-xs md:text-sm">
+                <p className="text-[10px] font-medium uppercase tracking-[0.15em] text-amber-400 xs:text-[11px] sm:text-xs md:text-sm">
                   Reena Gore
                 </p>
                 <p className="text-sm font-semibold xs:text-base sm:text-lg md:text-xl lg:text-2xl">

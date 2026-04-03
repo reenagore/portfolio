@@ -220,6 +220,58 @@ const sendUserBookPreorderConfirmationEmail = async ({
   });
 };
 
+const sendAdminProgrammeOrderEmail = async ({
+  programmeTitle,
+  fullName,
+  email,
+  phone,
+  company,
+  role,
+  amount,
+  paymentReference,
+}) => {
+  return resend.emails.send({
+    from: env.resendFromEmail,
+    to: env.adminEmail,
+    subject: `New Paid Programme Registration: ${programmeTitle}`,
+    html: `
+      <div style="font-family: Arial, sans-serif; line-height: 1.6;">
+        <h2>New Paid Programme Registration</h2>
+        <p><strong>Programme:</strong> ${programmeTitle}</p>
+        <p><strong>Name:</strong> ${fullName}</p>
+        <p><strong>Email:</strong> ${email}</p>
+        <p><strong>Phone:</strong> ${phone || "Not provided"}</p>
+        <p><strong>Company:</strong> ${company || "Not provided"}</p>
+        <p><strong>Role:</strong> ${role || "Not provided"}</p>
+        <p><strong>Amount:</strong> KES ${amount}</p>
+        <p><strong>Payment Reference:</strong> ${paymentReference}</p>
+      </div>
+    `,
+  });
+};
+
+const sendUserProgrammeOrderConfirmationEmail = async ({
+  fullName,
+  email,
+  programmeTitle,
+  amount,
+}) => {
+  return resend.emails.send({
+    from: env.resendFromEmail,
+    to: email,
+    subject: `Registration Confirmed: ${programmeTitle}`,
+    html: `
+      <div style="font-family: Arial, sans-serif; line-height: 1.6;">
+        <p>Hello ${fullName},</p>
+        <p>Your payment for <strong>${programmeTitle}</strong> has been received successfully.</p>
+        <p><strong>Amount Paid:</strong> KES ${amount}</p>
+        <p>Our team will follow up with programme logistics and attendance details.</p>
+        <p>Best regards,<br/>LYNKRZ Team</p>
+      </div>
+    `,
+  });
+};
+
 module.exports = {
   sendAdminContactEmail,
   sendUserConfirmationEmail,
@@ -228,5 +280,7 @@ module.exports = {
   sendAdminProgramRegistrationEmail,
   sendUserProgramRegistrationConfirmationEmail,
   sendUserBookPreorderConfirmationEmail,
-  sendAdminBookPreorderEmail
+  sendAdminBookPreorderEmail, 
+  sendUserProgrammeOrderConfirmationEmail,
+  sendAdminProgrammeOrderEmail
 };

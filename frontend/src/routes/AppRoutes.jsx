@@ -33,6 +33,8 @@ import ProgramDetails from "../pages/ProgramsDetails";
 import AdminProgramRegistrations from "../pages/admin/AdminProgram";
 import Book from "../pages/Book";
 import AdminBookPreorders from "../pages/admin/AdminPreOrder";
+import FinanceForNonFinanceProgramme from "../pages/Finance";
+import ProgrammePaymentVerify from "../pages/ProgramFinanceVerify";
 
 
 
@@ -55,7 +57,9 @@ export default function AppRoutes() {
         <Route path="/programs" element={<Programs/>}/>
         <Route path="/programs/:slug" element={<ProgramDetails/>}/>
         <Route path="/my-book" element={<Book/>}/>
-      
+        <Route path="/finance" element={<FinanceForNonFinanceProgramme/>}/>
+        <Route path="/finance/verify" element={<ProgrammePaymentVerify/> }/>
+
 
         
         <Route path="/payment/verify" element={<PaymentVerify />} />
@@ -74,6 +78,7 @@ export default function AppRoutes() {
           <Route path="/admin/podcasts" element={<AdminPodcasts />} />
           <Route path="/admin/podcasts/new" element={<AdminPodcastForm />} />
           <Route path="/admin/podcasts/:id/edit" element={<AdminPodcastForm />} />
+          
 
 
           <Route path="/admin/landing-pages" element={<LandingPagesIndex />} />

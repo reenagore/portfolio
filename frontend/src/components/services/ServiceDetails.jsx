@@ -89,7 +89,7 @@ export default function ServicesDetails() {
         <div className="relative max-w-3xl mb-16">
           <div className="absolute -left-4 top-0 h-20 w-1 bg-gradient-to-b from-[#FFD700] to-indigo-900"></div>
           <div className="pl-6">
-            <span className="inline-block rounded-full bg-[#FFD700]/10 px-4 py-2 text-sm font-medium text-[#FFD700] mb-4">
+            <span className="inline-block rounded-full bg-amber-400/10 px-4 py-2 text-sm font-medium text-amber-400 mb-4">
               What I Do
             </span>
             
@@ -132,7 +132,7 @@ export default function ServicesDetails() {
                 {/* Outcome Section */}
                 <div className="relative overflow-hidden rounded-xl border border-indigo-100 bg-white p-5">
                   <div className="absolute inset-0 bg-gradient-to-br from-[#FFD700]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                  <p className="text-sm font-semibold text-[#FFD700] mb-2">Outcome:</p>
+                  <p className="text-sm font-semibold text-amber-400 mb-2">Outcome:</p>
                   <p className="text-base leading-relaxed text-indigo-900/80">
                     {service.outcome}
                   </p>

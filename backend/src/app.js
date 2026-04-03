@@ -21,6 +21,7 @@ const productPageRoutes = require("./routes/product.routes");
 const galleryPageRoutes = require("./routes/gallery.routes");
 const programRegistrationRoutes = require("./routes/programRegistration.routes");
 const bookPreorderRoutes = require("./routes/preorder.routes");
+const programmeOrderRoutes = require("./routes/programOrder.routes");
 
 const app = express();
 
@@ -75,7 +76,8 @@ app.use("/api/events", eventPageRoutes);
 app.use("/api/products", productPageRoutes);
 app.use("/api/galleries", galleryPageRoutes);
 app.use("/api/program-registrations", programRegistrationRoutes);
-app.use("/api/book-preorders", bookPreorderRoutes);;
+app.use("/api/book-preorders", bookPreorderRoutes);
+app.use("/api/programme-orders", programmeOrderRoutes);
 
 
 app.use(notFound);

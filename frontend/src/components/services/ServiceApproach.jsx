@@ -67,9 +67,9 @@ const steps = [
         <div className="relative mx-auto max-w-7xl px-4 md:px-6">
           {/* Section Header */}
           <div className="relative max-w-3xl mb-16">
-            <div className="absolute -left-4 top-0 h-20 w-1 bg-gradient-to-b from-[#FFD700] to-indigo-900"></div>
+            <div className="absolute -left-4 top-0 h-20 w-1 bg-gradient-to-b from-amber-400 to-indigo-900"></div>
             <div className="pl-6">
-              <span className="inline-block rounded-full bg-[#FFD700]/10 px-4 py-2 text-sm font-medium text-[#FFD700] mb-4">
+              <span className="inline-block rounded-full bg-amber-400/10 px-4 py-2 text-sm font-medium text-[#FFD700] mb-4">
                 How the work happens
               </span>
               

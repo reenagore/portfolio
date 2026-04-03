@@ -81,7 +81,7 @@ export default function AboutExecutiveSummary() {
                 <h2 className="font-serif text-2xl font-bold leading-tight text-black md:text-3xl">
                   A career built at the intersection of{' '}
                   <span className="relative inline-block">
-                    <span className="relative z-10 text-[#FFD700]">finance, operations, and business execution</span>
+                    <span className="relative z-10 text-amber-400">finance, operations, and business execution</span>
                     <span className="absolute bottom-2 left-0 h-4 w-full"></span>
                   </span>
                   
@@ -164,10 +164,10 @@ export default function AboutExecutiveSummary() {
                     
                     <div className="relative">
                       <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-[#FFD700]/20 to-indigo-900/20">
-                        <span className="text-[#FFD700]">{achievement.icon}</span>
+                        <span className="text-amber-400">{achievement.icon}</span>
                       </div>
                       
-                      <p className="md:text-xl text-lg font-bold text-[#FFD700]">{achievement.value}</p>
+                      <p className="md:text-xl text-lg font-bold text-amber-400">{achievement.value}</p>
                       <p className="mt-1 text-sm font-semibold text-black">{achievement.label}</p>
                       <p className="mt-1 text-xs text-indigo-900/60 line-clamp-2">
                         {achievement.description}

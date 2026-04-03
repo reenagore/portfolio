@@ -99,7 +99,7 @@ export default function FpoMethod() {
             <h1 className=" text-2xl font-bold leading-tight text-white md:text-4xl lg:text-5xl">
               A framework that aligns{' '}
               <span className="relative inline-block">
-                <span className="relative z-10 text-[#FFD700]">finance, people, and operations</span>
+                <span className="relative z-10 text-amber-400">finance, people, and operations</span>
                 <span className="absolute bottom-3 left-0 h-5 w-full -z-0"></span>
               </span>
             </h1>
@@ -112,7 +112,7 @@ export default function FpoMethod() {
             <div className="mt-10 flex flex-col gap-4 sm:flex-row">
               <Link
                 to="/booking"
-                className="inline-flex items-center justify-center rounded-xl bg-[#FFD700] px-6 py-4 text-lg font-light text-black transition-all duration-300 hover:shadow-lg hover:shadow-[#FFD700]/20"
+                className="inline-flex items-center justify-center rounded-xl bg-amber-400 px-6 py-4 text-lg font-light text-black transition-all duration-300 hover:shadow-lg hover:shadow-[#FFD700]/20"
               >
                 <span className="relative z-10 flex items-center gap-2">
                   Start Your Journey
@@ -149,7 +149,7 @@ export default function FpoMethod() {
                 <h2 className=" text-2xl font-bold leading-tight text-black md:text-3xl lg:text-4xl">
                   Because growth breaks where{' '}
                   <span className="relative inline-block">
-                    <span className="relative z-10 text-[#FFD700]">alignment is weak</span>
+                    <span className="relative z-10 text-amber-400">alignment is weak</span>
                    
                   </span>
                 </h2>
@@ -257,7 +257,7 @@ export default function FpoMethod() {
               
               <h2 className="font-serif text-2xl font-bold leading-tight text-black md:text-3xl lg:text-4xl">
                 The power is not in the parts alone.{' '}
-                <span className="text-[#FFD700]">It is in the alignment.</span>
+                <span className="text-amber-400">It is in the alignment.</span>
               </h2>
 
               <div className="mt-8 space-y-4 text-lg leading-relaxed text-gray-600">
@@ -285,7 +285,7 @@ export default function FpoMethod() {
                   {/* Finance - Top */}
                   <div className="w-full max-w-sm">
                     <div className="relative border-b border-indigo-100 pb-4 mb-4">
-                      <div className="absolute left-0 top-0 h-8 w-1 bg-[#FFD700]"></div>
+                      <div className="absolute left-0 top-0 h-8 w-1 bg-amber-400"></div>
                       <p className="pl-4 text-xs font-semibold uppercase tracking-wider text-indigo-900/50">
                         Pillar One
                       </p>
@@ -410,7 +410,7 @@ export default function FpoMethod() {
         </div>
 
         <div className="relative mx-auto max-w-4xl px-4 py-8 text-center md:px-6 lg:py-15">
-          <span className="inline-block rounded-full bg-[#FFD700] px-4 py-2 text-sm font-bold text-black mb-6">
+          <span className="inline-block rounded-full bg-amber-400 px-4 py-2 text-sm font-bold text-black mb-6">
             Work With the Framework
           </span>
 
@@ -426,7 +426,7 @@ export default function FpoMethod() {
           <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
             <Link
               to="/booking"
-              className="group relative overflow-hidden rounded-xl bg-[#FFD700] px-8 py-4 text-lg font-medium text-black transition-all duration-300 hover:shadow-lg hover:shadow-[#FFD700]/20"
+              className="group relative overflow-hidden rounded-xl bg-amber-400 px-8 py-4 text-lg font-medium text-black transition-all duration-300 hover:shadow-lg hover:shadow-[#FFD700]/20"
             >
               <span className="relative z-10 flex items-center gap-2">
                 Book a Consultation

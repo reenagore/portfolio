@@ -102,7 +102,7 @@ export default function PodcastPreview() {
               <h2 className="font-serif text-2xl font-bold leading-tight text-black md:text-3xl">
                 Conversations that translate complex business challenges{' '}
                 <span className="relative inline-block">
-                  <span className="relative z-10 text-[#FFD700]">into practical clarity</span>
+                  <span className="relative z-10 text-amber-400">into practical clarity</span>
                  
                 </span>
                 .

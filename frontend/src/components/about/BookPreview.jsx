@@ -62,7 +62,7 @@ export default function BookPreviewSection() {
             <h2 className="font-serif text-2xl font-bold leading-tight text-black md:text-3xl lg:text-4xl">
               A practical guide for SMEs trying to grow{' '}
               <span className="relative inline-block">
-                <span className="relative z-10 text-[#FFD700]">without losing control</span>
+                <span className="relative z-10 text-amber-400">without losing control</span>
               
               </span>
             </h2>
@@ -89,7 +89,7 @@ export default function BookPreviewSection() {
             <div className="mt-10 flex  gap-4 sm:flex-row">
               <Link
                 to="/my-book"
-                className="group relative overflow-hidden justify-center align-center rounded-xl bg-gradient-to-r from-indigo-900 to-black px-8 py-4 text-sm font-medium text-[#FFD700] transition-all duration-300 hover:shadow-lg hover:shadow-[#FFD700]/20"
+                className="group relative overflow-hidden justify-center text-sm align-center rounded-xl bg-gradient-to-r from-indigo-900 to-black px-8 py-4 text-sm font-medium text-[#FFD700] transition-all duration-300 hover:shadow-lg hover:shadow-[#FFD700]/20"
               >
                 <span className="relative z-10 flex items-center gap-2">
                   Explore the Book
@@ -102,7 +102,7 @@ export default function BookPreviewSection() {
 
               <a
                 href="/my-book#preorder"
-                className="group inline-flex items-center justify-center rounded-xl border border-indigo-200 bg-white/80 px-8 py-4 text-sm font-medium text-indigo-900 backdrop-blur-sm transition-all duration-200 hover:border-[#FFD700] hover:text-[#FFD700] hover:shadow-lg hover:shadow-[#FFD700]/10"
+                className="group inline-flex items-center text-sm justify-center rounded-xl border border-indigo-200 bg-white/80 px-8 py-4 text-sm font-medium text-indigo-900 backdrop-blur-sm transition-all duration-200 hover:border-[#FFD700] hover:text-[#FFD700] hover:shadow-lg hover:shadow-[#FFD700]/10"
               >
                 Pre-order Now
                 <svg className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
