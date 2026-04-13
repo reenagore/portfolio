@@ -19,3 +19,11 @@ export const getAllAdmins = async () => {
   const { data } = await api.get("/admin");
   return data;
 };
+
+
+
+export const adminLogin = async (payload) => {
+  const { data } = await api.post("/admin/login", payload);
+  return data;
+};
+

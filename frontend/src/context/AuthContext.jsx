@@ -1,7 +1,6 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import {
   adminLogin as loginRequest,
-  adminLogout as logoutRequest,
   getCurrentAdmin,
 } from "../services/admin.service";
 
@@ -13,10 +12,19 @@ export const AdminAuthProvider = ({ children }) => {
 
   useEffect(() => {
     const checkAuth = async () => {
+      const token = localStorage.getItem("adminToken");
+
+      if (!token) {
+        setAdmin(null);
+        setAuthLoading(false);
+        return;
+      }
+
       try {
         const res = await getCurrentAdmin();
         setAdmin(res.data);
       } catch (error) {
+        localStorage.removeItem("adminToken");
         setAdmin(null);
       } finally {
         setAuthLoading(false);
@@ -28,12 +36,22 @@ export const AdminAuthProvider = ({ children }) => {
 
   const login = async (payload) => {
     const res = await loginRequest(payload);
-    setAdmin(res.data.admin);
+
+    const token = res?.data?.token;
+    const adminData = res?.data?.admin;
+
+    if (!token) {
+      throw new Error("Admin token not returned from login");
+    }
+
+    localStorage.setItem("adminToken", token);
+    setAdmin(adminData);
+
     return res;
   };
 
   const logout = async () => {
-    await logoutRequest();
+    localStorage.removeItem("adminToken");
     setAdmin(null);
   };
 
