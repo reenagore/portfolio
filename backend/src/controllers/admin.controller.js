@@ -23,10 +23,47 @@ const sendAuthCookie = (res, token) => {
 
 
  
+// const loginAdmin = asyncHandler(async (req, res) => {
+//   const { email, password } = req.body;
+
+//   const admin = await Admin.findOne({ email });
+//   if (!admin) {
+//     throw new ApiError(401, "Invalid credentials");
+//   }
+
+//   const isMatch = await bcrypt.compare(password, admin.password);
+//   if (!isMatch) {
+//     throw new ApiError(401, "Invalid credentials");
+//   }
+
+//   const token = signToken(admin._id);
+
+//   sendAuthCookie(res, token);
+
+//   res.status(200).json({
+//     success: true,
+//     message: "Login successful",
+//     data: {
+//       admin: {
+//         id: admin._id,
+//         fullName: admin.fullName,
+//         email: admin.email,
+//         role: admin.role,
+//       },
+//     },
+//   });
+// });
+
 const loginAdmin = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
 
-  const admin = await Admin.findOne({ email });
+  if (!email || !password) {
+    throw new ApiError(400, "Email and password are required");
+  }
+
+  const normalizedEmail = email.trim().toLowerCase();
+
+  const admin = await Admin.findOne({ email: normalizedEmail });
   if (!admin) {
     throw new ApiError(401, "Invalid credentials");
   }
@@ -53,7 +90,6 @@ const loginAdmin = asyncHandler(async (req, res) => {
     },
   });
 });
-
 /**
  * LOGOUT
  */
