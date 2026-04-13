@@ -5,7 +5,18 @@ const ApiError = require("../utils/ApiError");
 const asyncHandler = require("../utils/asyncHandler");
 
 const protectAdmin = asyncHandler(async (req, res, next) => {
-  const token = req.cookies[env.adminCookieName];
+  let token = null;
+
+  if (
+    req.headers.authorization &&
+    req.headers.authorization.startsWith("Bearer ")
+  ) {
+    token = req.headers.authorization.split(" ")[1];
+  }
+
+  if (!token && req.cookies?.[env.adminCookieName]) {
+    token = req.cookies[env.adminCookieName];
+  }
 
   if (!token) {
     throw new ApiError(401, "Not authenticated");
@@ -25,7 +36,7 @@ const protectAdmin = asyncHandler(async (req, res, next) => {
 
 const authorizeRoles = (...roles) => {
   return (req, res, next) => {
-    if (!roles.includes(req.admin.role)) {
+    if (!req.admin || !roles.includes(req.admin.role)) {
       throw new ApiError(403, "Not authorized");
     }
     next();
