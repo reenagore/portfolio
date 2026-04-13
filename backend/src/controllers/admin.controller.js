@@ -76,7 +76,7 @@ const loginAdmin = asyncHandler(async (req, res) => {
   }
 
   const isMatch = await bcrypt.compare(password, admin.password);
-  console.log("PASSWORD MATCH:", isMatch);
+ 
 
   if (!isMatch) {
     throw new ApiError(401, "Invalid credentials");

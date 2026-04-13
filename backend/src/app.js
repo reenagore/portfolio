@@ -37,7 +37,11 @@ app.use(
 
 app.use(
   cors({
-    origin: env.clientUrl,
+    origin: [
+      "http://localhost:5173",
+      "https://reenagore.net",
+      "https://www.reenagore.net",
+    ],
     credentials: true,
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
   })
