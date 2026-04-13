@@ -38,9 +38,6 @@ app.use(
 app.use(
   cors({
     origin: env.clientUrl,
-    "www.reenagore.net": env.clientUrl,
-    "https://reenagore.net": env.clientUrl,
-    "https://www.reenagore.net": env.clientUrl,
     credentials: true,
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
   })
