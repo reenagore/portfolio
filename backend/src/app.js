@@ -41,6 +41,7 @@ app.use(
       "http://localhost:5173",
       "https://reenagore.net",
       "https://www.reenagore.net",
+      "https://portfolio-q4y8.onrender.com",
     ],
     credentials: true,
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
