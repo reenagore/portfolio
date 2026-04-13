@@ -6,43 +6,41 @@ const resend = new Resend(env.resendApiKey);
 const sendAdminContactEmail = async ({
   fullName,
   email,
+  phone,
   company,
   subject,
   message,
 }) => {
   return resend.emails.send({
-    from: env.resendFromEmail,
+    from: `Reena Gore <${env.resendFromEmail}>`,
     to: env.adminEmail,
-    subject: subject
-      ? `New Contact Form: ${subject}`
-      : "New Contact Form Submission",
+    subject: `New Contact Inquiry`,
     html: `
-      <div style="font-family: Arial, sans-serif; line-height: 1.6;">
-        <h2>New Contact Form Submission</h2>
-        <p><strong>Name:</strong> ${fullName}</p>
-        <p><strong>Email:</strong> ${email}</p>
-        <p><strong>Company:</strong> ${company || "Not provided"}</p>
-        <p><strong>Subject:</strong> ${subject || "Not provided"}</p>
-        <hr />
-        <p><strong>Message:</strong></p>
-        <p>${message}</p>
-      </div>
+      <h2>New Contact Message</h2>
+      <p><strong>Name:</strong> ${fullName}</p>
+      <p><strong>Email:</strong> ${email}</p>
+      <p><strong>Phone:</strong> ${phone || "-"}</p>
+      <p><strong>Company:</strong> ${company || "-"}</p>
+      <p><strong>Subject:</strong> ${subject || "-"}</p>
+      <hr/>
+      <p>${message}</p>
     `,
   });
 };
 
-const sendUserConfirmationEmail = async ({ fullName, email }) => {
+const sendUserContactConfirmationEmail = async ({
+  fullName,
+  email,
+}) => {
   return resend.emails.send({
-    from: env.resendFromEmail,
+    from: `Reena Gore <${env.resendFromEmail}>`,
     to: email,
-    subject: "We received your message",
+    subject: "We’ve received your message",
     html: `
-      <div style="font-family: Arial, sans-serif; line-height: 1.6;">
-        <p>Hello ${fullName},</p>
-        <p>Thank you for reaching out. Your message has been received successfully.</p>
-        <p>We will review it and get back to you as soon as possible.</p>
-        <p>Best regards,<br />Reena Gore Team</p>
-      </div>
+      <p>Hello ${fullName},</p>
+      <p>Thank you for reaching out. Your message has been received.</p>
+      <p>Our team will respond shortly.</p>
+      <p>— Reena Gore Team</p>
     `,
   });
 };
@@ -64,7 +62,7 @@ const sendAdminBookingEmail = async ({
   source,
 }) => {
   return resend.emails.send({
-    from: env.resendFromEmail,
+    from: `Reena Gore <${env.resendFromEmail}>`,
     to: env.adminEmail,
     subject: `New Consultation Booking: ${service}`,
     html: `
@@ -99,7 +97,7 @@ const sendUserBookingConfirmationEmail = async ({
   service,
 }) => {
   return resend.emails.send({
-    from: env.resendFromEmail,
+    from: `Reena Gore <${env.resendFromEmail}>`,
     to: email,
     subject: "Your consultation request has been received",
     html: `
@@ -125,7 +123,7 @@ const sendAdminProgramRegistrationEmail = async ({
   message,
 }) => {
   return resend.emails.send({
-    from: env.resendFromEmail,
+    from: `Reena Gore <${env.resendFromEmail}>`,
     to: env.adminEmail,
     subject: `New Program Registration: ${programTitle}`,
     html: `
@@ -151,7 +149,7 @@ const sendUserProgramRegistrationConfirmationEmail = async ({
   programTitle,
 }) => {
   return resend.emails.send({
-    from: env.resendFromEmail,
+    from: `Reena Gore <${env.resendFromEmail}>`,
     to: email,
     subject: `Registration Received: ${programTitle}`,
     html: `
@@ -179,7 +177,7 @@ const sendAdminBookPreorderEmail = async ({
   paymentReference,
 }) => {
   return resend.emails.send({
-    from: env.resendFromEmail,
+    from: `Reena Gore <${env.resendFromEmail}>`,
     to: env.adminEmail,
     subject: `New Book Pre-order: ${bookTitle}`,
     html: `
@@ -205,7 +203,7 @@ const sendUserBookPreorderConfirmationEmail = async ({
   quantity,
 }) => {
   return resend.emails.send({
-    from: env.resendFromEmail,
+    from: `Reena Gore <${env.resendFromEmail}>`,
     to: email,
     subject: `Pre-order Received: ${bookTitle}`,
     html: `
@@ -231,7 +229,7 @@ const sendAdminProgrammeOrderEmail = async ({
   paymentReference,
 }) => {
   return resend.emails.send({
-    from: env.resendFromEmail,
+    from: `Reena Gore <${env.resendFromEmail}>`,
     to: env.adminEmail,
     subject: `New Paid Programme Registration: ${programmeTitle}`,
     html: `
@@ -257,7 +255,7 @@ const sendUserProgrammeOrderConfirmationEmail = async ({
   amount,
 }) => {
   return resend.emails.send({
-    from: env.resendFromEmail,
+    from: `Reena Gore <${env.resendFromEmail}>`,
     to: email,
     subject: `Registration Confirmed: ${programmeTitle}`,
     html: `
@@ -274,7 +272,7 @@ const sendUserProgrammeOrderConfirmationEmail = async ({
 
 module.exports = {
   sendAdminContactEmail,
-  sendUserConfirmationEmail,
+  sendUserContactConfirmationEmail,
   sendAdminBookingEmail,
   sendUserBookingConfirmationEmail,
   sendAdminProgramRegistrationEmail,

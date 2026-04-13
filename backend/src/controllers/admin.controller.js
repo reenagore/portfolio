@@ -57,18 +57,27 @@ const sendAuthCookie = (res, token) => {
 const loginAdmin = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
 
+  console.log("LOGIN BODY:", req.body);
+
   if (!email || !password) {
     throw new ApiError(400, "Email and password are required");
   }
 
   const normalizedEmail = email.trim().toLowerCase();
+  console.log("NORMALIZED EMAIL:", normalizedEmail);
 
-  const admin = await Admin.findOne({ email: normalizedEmail });
+  const admin = await Admin.findOne({ email: normalizedEmail }).select("+password");
+  console.log("ADMIN FOUND:", !!admin);
+  console.log("ADMIN EMAIL IN DB:", admin?.email);
+  console.log("HAS PASSWORD:", !!admin?.password);
+
   if (!admin) {
     throw new ApiError(401, "Invalid credentials");
   }
 
   const isMatch = await bcrypt.compare(password, admin.password);
+  console.log("PASSWORD MATCH:", isMatch);
+
   if (!isMatch) {
     throw new ApiError(401, "Invalid credentials");
   }

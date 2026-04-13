@@ -1,56 +1,53 @@
-const ContactMessage = require("../models/ContactMessage");
+const Contact = require("../models/Contact");
 const asyncHandler = require("../utils/asyncHandler");
-const ApiError = require("../utils/ApiError");
-const { sanitizeValue } = require("../utils/sanitize");
 const {
   sendAdminContactEmail,
-  sendUserConfirmationEmail,
+  sendUserContactConfirmationEmail,
 } = require("../services/resend.service");
 
-const submitContactForm = asyncHandler(async (req, res) => {
-  const sanitizedBody = sanitizeValue(req.body);
-
-  const fullName = sanitizedBody.fullName;
-  const email = sanitizedBody.email;
-  const company = sanitizedBody.company || "";
-  const subject = sanitizedBody.subject || "";
-  const message = sanitizedBody.message;
-
-  const contactMessage = await ContactMessage.create({
-    fullName,
-    email,
-    company,
-    subject,
-    message,
-  });
-
-  if (!contactMessage) {
-    throw new ApiError(500, "Failed to save contact message");
-  }
+const submitContact = asyncHandler(async (req, res) => {
+  const contact = await Contact.create(req.body);
 
   try {
     await Promise.all([
-      sendAdminContactEmail({ fullName, email, company, subject, message }),
-      sendUserConfirmationEmail({ fullName, email }),
+      sendAdminContactEmail(contact),
+      sendUserContactConfirmationEmail(contact),
     ]);
-  } catch (emailError) {
-    console.error("Email sending failed:", emailError.message);
+  } catch (err) {
+    console.error("Email error:", err.message);
   }
 
   res.status(201).json({
     success: true,
-    message: "Your message has been sent successfully",
-    data: {
-      id: contactMessage._id,
-      fullName: contactMessage.fullName,
-      email: contactMessage.email,
-      subject: contactMessage.subject,
-      status: contactMessage.status,
-      createdAt: contactMessage.createdAt,
-    },
+    message: "Message sent successfully",
+  });
+});
+
+const getContacts = asyncHandler(async (req, res) => {
+  const contacts = await Contact.find().sort({ createdAt: -1 });
+
+  res.json({
+    success: true,
+    data: contacts,
+  });
+});
+
+const updateContactStatus = asyncHandler(async (req, res) => {
+  const item = await Contact.findById(req.params.id);
+
+  if (!item) throw new Error("Not found");
+
+  item.status = req.body.status || item.status;
+  await item.save();
+
+  res.json({
+    success: true,
+    data: item,
   });
 });
 
 module.exports = {
-  submitContactForm,
+  submitContact,
+  getContacts,
+  updateContactStatus,
 };

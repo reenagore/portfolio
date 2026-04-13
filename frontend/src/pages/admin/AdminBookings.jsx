@@ -4,12 +4,23 @@ import {
   updateBookingStatus,
 } from "../../services/booking.service";
 
+const statusOptions = [
+  { value: "new", label: "New", color: "bg-blue-100 text-blue-700" },
+  { value: "reviewed", label: "Reviewed", color: "bg-purple-100 text-purple-700" },
+  { value: "contacted", label: "Contacted", color: "bg-amber-100 text-amber-700" },
+  { value: "scheduled", label: "Scheduled", color: "bg-indigo-100 text-indigo-700" },
+  { value: "closed", label: "Closed", color: "bg-emerald-100 text-emerald-700" },
+  { value: "archived", label: "Archived", color: "bg-slate-100 text-slate-700" },
+];
+
 export default function AdminBookings() {
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(true);
   const [updatingId, setUpdatingId] = useState("");
   const [filterStatus, setFilterStatus] = useState("all");
   const [searchTerm, setSearchTerm] = useState("");
+  const [selectedBooking, setSelectedBooking] = useState(null);
+  const [showDetailsModal, setShowDetailsModal] = useState(false);
 
   const fetchBookings = async () => {
     try {
@@ -31,11 +42,21 @@ export default function AdminBookings() {
       setUpdatingId(id);
       await updateBookingStatus(id, { status });
       await fetchBookings();
+      
+      // Update selected booking if it's the one being edited
+      if (selectedBooking?._id === id) {
+        setSelectedBooking({ ...selectedBooking, status });
+      }
     } catch (error) {
       console.error("Failed to update booking:", error);
     } finally {
       setUpdatingId("");
     }
+  };
+
+  const handleViewDetails = (booking) => {
+    setSelectedBooking(booking);
+    setShowDetailsModal(true);
   };
 
   const getStatusColor = (status) => {
@@ -66,6 +87,205 @@ export default function AdminBookings() {
 
   return (
     <div className="space-y-6">
+      {/* Details Modal */}
+      {showDetailsModal && selectedBooking && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+          <div className="relative w-full max-w-3xl max-h-[90vh] overflow-y-auto rounded-2xl">
+            <button
+              onClick={() => setShowDetailsModal(false)}
+              className="absolute right-4 top-4 z-10 rounded-full bg-white/90 p-2 text-gray-500 hover:text-gray-700 transition-colors shadow-md"
+            >
+              <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+            
+            <div className="bg-white rounded-2xl overflow-hidden shadow-2xl">
+              {/* Modal Header */}
+              <div className="relative border-b border-indigo-100 bg-gradient-to-r from-white to-indigo-50/30 p-6">
+                <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-[#FFD700] to-indigo-900"></div>
+                <div className="flex items-center gap-3">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-[#FFD700]/20 to-indigo-900/20">
+                    <span className="font-serif text-xl font-semibold text-black">
+                      {selectedBooking.fullName?.charAt(0) || "?"}
+                    </span>
+                  </div>
+                  <div>
+                    <h2 className="font-serif text-2xl font-bold text-black">
+                      {selectedBooking.fullName}
+                    </h2>
+                    <p className="text-sm text-indigo-900/60">
+                      Booking Details
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Modal Content */}
+              <div className="p-6 space-y-6">
+                {/* Service & Status */}
+                <div className="grid gap-4 md:grid-cols-2">
+                  <div className="rounded-xl border border-indigo-100 bg-gradient-to-br from-indigo-50/30 to-white p-4">
+                    <div className="flex items-center gap-2 mb-2">
+                      <svg className="h-4 w-4 text-[#FFD700]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 12h8v8H7v-8z" />
+                      </svg>
+                      <p className="text-xs font-semibold uppercase tracking-[0.15em] text-[#FFD700]">Service</p>
+                    </div>
+                    <p className="text-lg font-medium text-black">{selectedBooking.service}</p>
+                  </div>
+
+                  <div className="rounded-xl border border-indigo-100 bg-gradient-to-br from-indigo-50/30 to-white p-4">
+                    <div className="flex items-center gap-2 mb-2">
+                      <svg className="h-4 w-4 text-[#FFD700]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                      <p className="text-xs font-semibold uppercase tracking-[0.15em] text-[#FFD700]">Status</p>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <span className={`rounded-full px-3 py-1 text-xs font-medium ${getStatusColor(selectedBooking.status)}`}>
+                        {selectedBooking.status}
+                      </span>
+                      <select
+                        value={selectedBooking.status}
+                        onChange={(e) => handleStatusChange(selectedBooking._id, e.target.value)}
+                        disabled={updatingId === selectedBooking._id}
+                        className="rounded-lg border border-indigo-200 bg-white px-3 py-1 text-sm focus:border-[#FFD700] focus:outline-none"
+                      >
+                        {statusOptions.map((option) => (
+                          <option key={option.value} value={option.value}>
+                            Change to {option.label}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Contact Details */}
+                <div className="rounded-xl border border-indigo-100 bg-white p-5">
+                  <h3 className="text-sm font-semibold uppercase tracking-[0.15em] text-[#FFD700] mb-4">
+                    Contact Information
+                  </h3>
+                  <div className="grid gap-4 md:grid-cols-2">
+                    <div>
+                      <p className="text-xs text-indigo-900/50">Full Name</p>
+                      <p className="font-medium text-black">{selectedBooking.fullName}</p>
+                    </div>
+                    <div>
+                      <p className="text-xs text-indigo-900/50">Email Address</p>
+                      <a href={`mailto:${selectedBooking.email}`} className="font-medium text-[#FFD700] hover:underline">
+                        {selectedBooking.email}
+                      </a>
+                    </div>
+                    <div>
+                      <p className="text-xs text-indigo-900/50">Phone Number</p>
+                      <p className="text-black">{selectedBooking.phone || "Not provided"}</p>
+                    </div>
+                    <div>
+                      <p className="text-xs text-indigo-900/50">Company</p>
+                      <p className="text-black">{selectedBooking.company || "Not provided"}</p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Business Details */}
+                <div className="rounded-xl border border-indigo-100 bg-white p-5">
+                  <h3 className="text-sm font-semibold uppercase tracking-[0.15em] text-[#FFD700] mb-4">
+                    Business Information
+                  </h3>
+                  <div className="grid gap-4 md:grid-cols-2">
+                    <div>
+                      <p className="text-xs text-indigo-900/50">Business Stage</p>
+                      <p className="text-black">{selectedBooking.businessStage || "Not specified"}</p>
+                    </div>
+                    <div>
+                      <p className="text-xs text-indigo-900/50">Annual Revenue Range</p>
+                      <p className="text-black">{selectedBooking.annualRevenueRange || "Not specified"}</p>
+                    </div>
+                    <div>
+                      <p className="text-xs text-indigo-900/50">Preferred Contact Method</p>
+                      <p className="text-black">{selectedBooking.preferredContactMethod || "Email"}</p>
+                    </div>
+                    <div>
+                      <p className="text-xs text-indigo-900/50">Preferred Session Type</p>
+                      <p className="text-black">{selectedBooking.preferredSessionType || "Virtual"}</p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Session Details */}
+                <div className="rounded-xl border border-indigo-100 bg-white p-5">
+                  <h3 className="text-sm font-semibold uppercase tracking-[0.15em] text-[#FFD700] mb-4">
+                    Session Details
+                  </h3>
+                  <div className="grid gap-4 md:grid-cols-2">
+                    <div>
+                      <p className="text-xs text-indigo-900/50">Preferred Date</p>
+                      <p className="text-black">{selectedBooking.preferredDate ? new Date(selectedBooking.preferredDate).toLocaleDateString() : "Not specified"}</p>
+                    </div>
+                    <div>
+                      <p className="text-xs text-indigo-900/50">Preferred Time</p>
+                      <p className="text-black">{selectedBooking.preferredTime || "Not specified"}</p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Challenge & Goals */}
+                <div className="grid gap-4 md:grid-cols-2">
+                  <div className="rounded-xl border border-indigo-100 bg-indigo-50/30 p-5">
+                    <div className="flex items-center gap-2 mb-3">
+                      <svg className="h-5 w-5 text-[#FFD700]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                      </svg>
+                      <h3 className="font-semibold text-black">Main Challenge</h3>
+                    </div>
+                    <p className="text-sm leading-relaxed text-indigo-900/70">
+                      {selectedBooking.challengeSummary || "No challenge specified"}
+                    </p>
+                  </div>
+
+                  <div className="rounded-xl border border-indigo-100 bg-indigo-50/30 p-5">
+                    <div className="flex items-center gap-2 mb-3">
+                      <svg className="h-5 w-5 text-[#FFD700]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                      <h3 className="font-semibold text-black">Goals & Outcomes</h3>
+                    </div>
+                    <p className="text-sm leading-relaxed text-indigo-900/70">
+                      {selectedBooking.goals || "No goals specified"}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Submission Date */}
+                <div className="rounded-xl border border-indigo-100 bg-white p-4">
+                  <div className="flex items-center gap-2">
+                    <svg className="h-4 w-4 text-[#FFD700]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    </svg>
+                    <p className="text-xs font-medium text-indigo-900/50">Booking Date</p>
+                  </div>
+                  <p className="mt-1 text-sm text-black">
+                    {new Date(selectedBooking.createdAt).toLocaleString()}
+                  </p>
+                </div>
+              </div>
+
+              {/* Modal Footer */}
+              <div className="border-t border-indigo-100 bg-indigo-50/30 p-4 flex justify-end">
+                <button
+                  onClick={() => setShowDetailsModal(false)}
+                  className="rounded-xl border border-indigo-200 bg-white px-6 py-2 text-sm font-medium text-indigo-900 transition-all hover:border-[#FFD700] hover:text-[#FFD700]"
+                >
+                  Close
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Header with golden accent */}
       <div className="relative">
         <div className="absolute -left-4 top-0 h-12 w-1 bg-gradient-to-b from-[#FFD700] to-indigo-900"></div>
@@ -283,15 +503,27 @@ export default function AdminBookings() {
                       </div>
                     </td>
                     <td className="px-6 py-4">
-                      <button
-                        onClick={() => handleStatusChange(booking._id, 'archived')}
-                        className="rounded-lg p-2 text-indigo-400 transition-colors hover:bg-indigo-100 hover:text-[#FFD700]"
-                        title="Archive"
-                      >
-                        <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" />
-                        </svg>
-                      </button>
+                      <div className="flex items-center gap-2">
+                        <button
+                          onClick={() => handleViewDetails(booking)}
+                          className="rounded-lg p-2 text-indigo-400 transition-colors hover:bg-indigo-100 hover:text-[#FFD700]"
+                          title="View Details"
+                        >
+                          <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                          </svg>
+                        </button>
+                        <button
+                          onClick={() => handleStatusChange(booking._id, 'archived')}
+                          className="rounded-lg p-2 text-indigo-400 transition-colors hover:bg-indigo-100 hover:text-[#FFD700]"
+                          title="Archive"
+                        >
+                          <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" />
+                          </svg>
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))

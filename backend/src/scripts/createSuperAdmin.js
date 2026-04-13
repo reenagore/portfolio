@@ -1,3 +1,4 @@
+const bcrypt = require("bcryptjs");
 const mongoose = require("mongoose");
 const env = require("../config/env");
 const Admin = require("../models/Admin");
@@ -20,18 +21,21 @@ const createSuperAdmin = async () => {
 
     console.log("MongoDB connected");
 
-    const existingAdmin = await Admin.findOne({ email: email.toLowerCase() });
+    const normalizedEmail = email.toLowerCase().trim();
+
+    const existingAdmin = await Admin.findOne({ email: normalizedEmail });
 
     if (existingAdmin) {
-      console.log("Admin already exists with this email:");
-      console.log(`Email: ${existingAdmin.email}`);
-      process.exit(0);
+      await Admin.deleteOne({ email: normalizedEmail });
+      console.log("Existing super admin deleted");
     }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
 
     const admin = await Admin.create({
       fullName,
-      email: email.toLowerCase(),
-      password,
+      email: normalizedEmail,
+      password: hashedPassword,
       role: "super_admin",
       isActive: true,
     });
@@ -46,7 +50,7 @@ const createSuperAdmin = async () => {
 
     process.exit(0);
   } catch (error) {
-    console.error("Failed to create super admin:", error.message);
+    console.error("Failed to create admin:", error.message);
     process.exit(1);
   }
 };

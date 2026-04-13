@@ -8,6 +8,8 @@ const env = require("./config/env");
 const healthRoutes = require("./routes/health.routes");
 const adminRoutes = require("./routes/admin.routes");
 const contactRoutes = require("./routes/contact.routes");
+
+
 const articleRoutes = require("./routes/article.routes");
 const podcastRoutes = require("./routes/podcast.routes");
 const uploadRoutes = require("./routes/upload.routes");
@@ -36,6 +38,9 @@ app.use(
 app.use(
   cors({
     origin: env.clientUrl,
+    "www.reenagore.net": env.clientUrl,
+    "https://reenagore.net": env.clientUrl,
+    "https://www.reenagore.net": env.clientUrl,
     credentials: true,
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
   })
@@ -66,7 +71,7 @@ if (!env.isProduction) {
 
 app.use("/api/health", healthRoutes);
 app.use("/api/admin", adminRoutes);
-app.use("/api/contact", contactRoutes);
+app.use("/api/contacts", contactRoutes);
 app.use("/api/articles", articleRoutes);
 app.use("/api/podcasts", podcastRoutes);
 app.use("/api/uploads", uploadRoutes);
