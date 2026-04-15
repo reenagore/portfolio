@@ -1,4 +1,4 @@
-const GalleryPage = require("../models/Gallery");
+const EventPage = require("../models/EventPage");
 const ApiError = require("../utils/ApiError");
 const asyncHandler = require("../utils/asyncHandler");
 const slugify = require("../utils/slugify");
@@ -11,9 +11,11 @@ const ensureUniqueSlug = async (baseSlug, currentId = null) => {
   let counter = 1;
 
   while (true) {
-    const existing = await GalleryPage.findOne({ slug });
+    const existing = await EventPage.findOne({ slug });
+
     if (!existing) return slug;
     if (currentId && existing._id.toString() === currentId.toString()) return slug;
+
     slug = `${baseSlug}-${counter}`;
     counter += 1;
   }
@@ -22,6 +24,7 @@ const ensureUniqueSlug = async (baseSlug, currentId = null) => {
 const parseJSONField = (value, fallback) => {
   if (!value) return fallback;
   if (typeof value === "object") return value;
+
   try {
     return JSON.parse(value);
   } catch {
@@ -29,57 +32,82 @@ const parseJSONField = (value, fallback) => {
   }
 };
 
-const getPublicGalleries = asyncHandler(async (req, res) => {
+const getPublicEvents = asyncHandler(async (req, res) => {
   const { featured, search = "" } = req.query;
   const query = { status: "published" };
 
   if (featured === "true") query.featured = true;
+
   if (search) {
     query.$or = [
       { title: { $regex: search, $options: "i" } },
       { description: { $regex: search, $options: "i" } },
+      { location: { $regex: search, $options: "i" } },
     ];
   }
 
-  const items = await GalleryPage.find(query).sort({ publishedAt: -1, createdAt: -1 });
-  res.status(200).json({ success: true, data: items });
+  const items = await EventPage.find(query).sort({ publishedAt: -1, createdAt: -1 });
+
+  res.status(200).json({
+    success: true,
+    data: items,
+  });
 });
 
-const getAdminGalleries = asyncHandler(async (req, res) => {
-  const items = await GalleryPage.find().sort({ createdAt: -1 });
-  res.status(200).json({ success: true, data: items });
+const getAdminEvents = asyncHandler(async (req, res) => {
+  const items = await EventPage.find().sort({ createdAt: -1 });
+
+  res.status(200).json({
+    success: true,
+    data: items,
+  });
 });
 
-const getPublicGalleryBySlug = asyncHandler(async (req, res) => {
-  const item = await GalleryPage.findOne({ slug: req.params.slug, status: "published" });
-  if (!item) throw new ApiError(404, "Gallery not found");
-  res.status(200).json({ success: true, data: item });
+const getPublicEventBySlug = asyncHandler(async (req, res) => {
+  const item = await EventPage.findOne({
+    slug: req.params.slug,
+    status: "published",
+  });
+
+  if (!item) throw new ApiError(404, "Event not found");
+
+  res.status(200).json({
+    success: true,
+    data: item,
+  });
 });
 
-const getAdminGalleryById = asyncHandler(async (req, res) => {
-  const item = await GalleryPage.findById(req.params.id);
-  if (!item) throw new ApiError(404, "Gallery not found");
-  res.status(200).json({ success: true, data: item });
+const getAdminEventById = asyncHandler(async (req, res) => {
+  const item = await EventPage.findById(req.params.id);
+
+  if (!item) throw new ApiError(404, "Event not found");
+
+  res.status(200).json({
+    success: true,
+    data: item,
+  });
 });
 
-const createGallery = asyncHandler(async (req, res) => {
+const createEvent = asyncHandler(async (req, res) => {
   const body = sanitizeValue(req.body);
   const baseSlug = slugify(body.title);
+
   if (!baseSlug) throw new ApiError(400, "Valid title required");
 
   if (body.description && stripHtml(body.description).length < 10) {
     throw new ApiError(400, "Description is too short");
   }
 
-  const details = parseJSONField(body.galleryDetails, {});
-
-  const item = await GalleryPage.create({
+  const item = await EventPage.create({
     title: body.title,
     slug: await ensureUniqueSlug(baseSlug),
     description: body.description || "",
     coverImage: parseJSONField(body.coverImage, { url: "", publicId: "" }),
-    images: details.images || [],
-    videoUrl: details.videoUrl || "",
+    date: body.date || null,
+    time: body.time || "",
+    location: body.location || "",
+    cost: Number(body.cost || 0),
+    paymentEnabled: body.paymentEnabled === "true" || body.paymentEnabled === true,
     status: body.status || "draft",
     featured: body.featured === "true" || body.featured === true,
     seoTitle: body.seoTitle || "",
@@ -87,12 +115,17 @@ const createGallery = asyncHandler(async (req, res) => {
     publishedAt: body.status === "published" ? new Date() : null,
   });
 
-  res.status(201).json({ success: true, message: "Gallery created", data: item });
+  res.status(201).json({
+    success: true,
+    message: "Event created",
+    data: item,
+  });
 });
 
-const updateGallery = asyncHandler(async (req, res) => {
-  const item = await GalleryPage.findById(req.params.id);
-  if (!item) throw new ApiError(404, "Gallery not found");
+const updateEvent = asyncHandler(async (req, res) => {
+  const item = await EventPage.findById(req.params.id);
+
+  if (!item) throw new ApiError(404, "Event not found");
 
   const body = sanitizeValue(req.body);
 
@@ -112,15 +145,14 @@ const updateGallery = asyncHandler(async (req, res) => {
     item.coverImage = parseJSONField(body.coverImage, item.coverImage);
   }
 
-  const details = body.galleryDetails
-    ? parseJSONField(body.galleryDetails, {})
-    : null;
-
-  if (details) {
-    item.images = details.images ?? item.images;
-    item.videoUrl = details.videoUrl ?? item.videoUrl;
-  }
-
+  item.date = body.date ?? item.date;
+  item.time = body.time ?? item.time;
+  item.location = body.location ?? item.location;
+  item.cost = body.cost !== undefined ? Number(body.cost) : item.cost;
+  item.paymentEnabled =
+    body.paymentEnabled !== undefined
+      ? body.paymentEnabled === "true" || body.paymentEnabled === true
+      : item.paymentEnabled;
   item.status = body.status || item.status;
   item.featured =
     body.featured !== undefined
@@ -134,22 +166,33 @@ const updateGallery = asyncHandler(async (req, res) => {
   }
 
   await item.save();
-  res.status(200).json({ success: true, message: "Gallery updated", data: item });
+
+  res.status(200).json({
+    success: true,
+    message: "Event updated",
+    data: item,
+  });
 });
 
-const deleteGallery = asyncHandler(async (req, res) => {
-  const item = await GalleryPage.findById(req.params.id);
-  if (!item) throw new ApiError(404, "Gallery not found");
+const deleteEvent = asyncHandler(async (req, res) => {
+  const item = await EventPage.findById(req.params.id);
+
+  if (!item) throw new ApiError(404, "Event not found");
+
   await item.deleteOne();
-  res.status(200).json({ success: true, message: "Gallery deleted" });
+
+  res.status(200).json({
+    success: true,
+    message: "Event deleted",
+  });
 });
 
 module.exports = {
-  getPublicGalleries,
-  getAdminGalleries,
-  getPublicGalleryBySlug,
-  getAdminGalleryById,
-  createGallery,
-  updateGallery,
-  deleteGallery,
+  getPublicEvents,
+  getAdminEvents,
+  getPublicEventBySlug,
+  getAdminEventById,
+  createEvent,
+  updateEvent,
+  deleteEvent,
 };

@@ -7,8 +7,8 @@ const navLinks = [
   { label: "FPO Method", path: "/fpo-method" },
   { label: "Services", path: "/services" },
   { label: "Podcast", path: "/podcast" },
+  { label: "Events", path: "/events" },
   { label: "Programs", path: "/programs"},
-  { label: "Insights", path: "/insights" },
   { label: "Contact", path: "/contact" },
 ];
 

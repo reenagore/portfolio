@@ -1,16 +1,16 @@
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import TiptapEditor from "./TiptapEditor";
-import MediaUploadButton from "./MediaUpload";
+import TiptapEditor from "../../components/admin/TiptapEditor";
+import MediaUploadButton from "../../components/admin/MediaUploadButton";
 import {
-  createGallery,
-  getAdminGalleryById,
-  updateGallery,
-} from "../../services/gallery.service";
+  createEvent,
+  getAdminEventById,
+  updateEvent,
+} from "../../services/events.service";
 
 const emptyImage = { url: "", publicId: "" };
 
-export default function AdminGalleryForm() {
+export default function AdminEventForm() {
   const { id } = useParams();
   const isEditMode = useMemo(() => Boolean(id), [id]);
   const navigate = useNavigate();
@@ -19,8 +19,11 @@ export default function AdminGalleryForm() {
     title: "",
     description: "",
     coverImage: emptyImage,
-    images: [],
-    videoUrl: "",
+    date: "",
+    time: "",
+    location: "",
+    cost: 0,
+    paymentEnabled: false,
     status: "draft",
     featured: false,
     seoTitle: "",
@@ -30,28 +33,33 @@ export default function AdminGalleryForm() {
   const [activeTab, setActiveTab] = useState("basic");
   const [loading, setLoading] = useState(isEditMode);
   const [saving, setSaving] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const [uploadError, setUploadError] = useState("");
 
   useEffect(() => {
     if (!isEditMode) return;
 
     const fetchItem = async () => {
       try {
-        const res = await getAdminGalleryById(id);
+        const res = await getAdminEventById(id);
         const item = res.data;
 
         setFormData({
           title: item.title || "",
           description: item.description || "",
           coverImage: item.coverImage || emptyImage,
-          images: item.images || [],
-          videoUrl: item.videoUrl || "",
+          date: item.date ? item.date.slice(0, 10) : "",
+          time: item.time || "",
+          location: item.location || "",
+          cost: item.cost || 0,
+          paymentEnabled: Boolean(item.paymentEnabled),
           status: item.status || "draft",
           featured: Boolean(item.featured),
           seoTitle: item.seoTitle || "",
           seoDescription: item.seoDescription || "",
         });
       } catch (error) {
-        console.error("Failed to load gallery:", error);
+        console.error("Failed to load event:", error);
       } finally {
         setLoading(false);
       }
@@ -62,7 +70,6 @@ export default function AdminGalleryForm() {
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
-
     setFormData((prev) => ({
       ...prev,
       [name]: type === "checkbox" ? checked : value,
@@ -70,35 +77,28 @@ export default function AdminGalleryForm() {
   };
 
   const handleCoverUpload = (uploaded) => {
-    setFormData((prev) => ({
-      ...prev,
-      coverImage: {
-        url: uploaded?.url || "",
-        publicId: uploaded?.publicId || "",
-      },
-    }));
-  };
-
-  const handleGalleryImageUpload = (uploaded) => {
-    if (!uploaded?.url) return;
-
-    setFormData((prev) => ({
-      ...prev,
-      images: [
-        ...prev.images,
-        {
+    console.log("Upload response:", uploaded); // Debug log
+    setUploading(false);
+    
+    if (uploaded?.url) {
+      setFormData((prev) => ({
+        ...prev,
+        coverImage: {
           url: uploaded.url,
-          publicId: uploaded.publicId || "",
+          publicId: uploaded.publicId || uploaded.id || "",
         },
-      ],
-    }));
+      }));
+      setUploadError("");
+    } else if (uploaded?.error) {
+      setUploadError(uploaded.error);
+    } else {
+      setUploadError("Upload failed. Please try again.");
+    }
   };
 
-  const removeGalleryImage = (indexToRemove) => {
-    setFormData((prev) => ({
-      ...prev,
-      images: prev.images.filter((_, index) => index !== indexToRemove),
-    }));
+  const handleCoverUploadStart = () => {
+    setUploading(true);
+    setUploadError("");
   };
 
   const handleSubmit = async (e) => {
@@ -110,10 +110,11 @@ export default function AdminGalleryForm() {
         title: formData.title,
         description: formData.description,
         coverImage: JSON.stringify(formData.coverImage),
-        galleryDetails: JSON.stringify({
-          images: formData.images,
-          videoUrl: formData.videoUrl,
-        }),
+        date: formData.date,
+        time: formData.time,
+        location: formData.location,
+        cost: formData.cost,
+        paymentEnabled: formData.paymentEnabled,
         status: formData.status,
         featured: formData.featured,
         seoTitle: formData.seoTitle,
@@ -121,15 +122,15 @@ export default function AdminGalleryForm() {
       };
 
       if (isEditMode) {
-        await updateGallery(id, payload);
+        await updateEvent(id, payload);
       } else {
-        await createGallery(payload);
+        await createEvent(payload);
       }
 
-      navigate("/admin/landing-pages/galleries");
+      navigate("/admin/landing-pages/events");
     } catch (error) {
-      console.error("Failed to save gallery:", error);
-      alert(error.response?.data?.message || "Failed to save gallery");
+      console.error("Failed to save event:", error);
+      alert(error.response?.data?.message || "Failed to save event");
     } finally {
       setSaving(false);
     }
@@ -142,7 +143,7 @@ export default function AdminGalleryForm() {
           <div className="relative mx-auto h-16 w-16">
             <div className="absolute inset-0 rounded-full border-4 border-indigo-100 border-t-[#FFD700] animate-spin"></div>
           </div>
-          <p className="mt-4 text-indigo-900/60">Loading gallery...</p>
+          <p className="mt-4 text-indigo-900/60">Loading event...</p>
         </div>
       </div>
     );
@@ -159,7 +160,7 @@ export default function AdminGalleryForm() {
               <>
                 Edit{' '}
                 <span className="relative inline-block">
-                  <span className="relative z-10 text-[#FFD700]">Gallery</span>
+                  <span className="relative z-10 text-[#FFD700]">Event</span>
                   <span className="absolute bottom-1 left-0 h-3 w-full bg-[#FFD700]/20 -z-0"></span>
                 </span>
               </>
@@ -167,14 +168,14 @@ export default function AdminGalleryForm() {
               <>
                 Create{' '}
                 <span className="relative inline-block">
-                  <span className="relative z-10 text-[#FFD700]">Gallery</span>
+                  <span className="relative z-10 text-[#FFD700]">Event</span>
                   <span className="absolute bottom-1 left-0 h-3 w-full bg-[#FFD700]/20 -z-0"></span>
                 </span>
               </>
             )}
           </h2>
           <p className="mt-2 text-indigo-900/70">
-            Create or update a gallery landing page
+            Create or update an event landing page
           </p>
         </div>
       </div>
@@ -226,20 +227,6 @@ export default function AdminGalleryForm() {
           </button>
           <button
             type="button"
-            onClick={() => setActiveTab("gallery")}
-            className={`px-6 py-3 text-sm font-medium transition-all duration-200 relative ${
-              activeTab === "gallery"
-                ? "text-[#FFD700]"
-                : "text-indigo-900/60 hover:text-indigo-900"
-            }`}
-          >
-            Gallery Images
-            {activeTab === "gallery" && (
-              <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-[#FFD700] to-indigo-900"></span>
-            )}
-          </button>
-          <button
-            type="button"
             onClick={() => setActiveTab("seo")}
             className={`px-6 py-3 text-sm font-medium transition-all duration-200 relative ${
               activeTab === "seo"
@@ -260,7 +247,7 @@ export default function AdminGalleryForm() {
             <div className="flex items-center gap-3 mb-6">
               <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#FFD700]/10">
                 <svg className="h-5 w-5 text-[#FFD700]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                 </svg>
               </div>
               <h3 className="font-serif text-xl font-semibold text-black">Basic Information</h3>
@@ -270,7 +257,7 @@ export default function AdminGalleryForm() {
               {/* Title */}
               <div>
                 <label className="mb-2 block text-sm font-medium text-indigo-900/70">
-                  Gallery Title <span className="text-[#FFD700]">*</span>
+                  Event Title <span className="text-[#FFD700]">*</span>
                 </label>
                 <input
                   type="text"
@@ -283,26 +270,55 @@ export default function AdminGalleryForm() {
                 />
               </div>
 
-              {/* Video URL */}
-              <div>
-                <label className="mb-2 block text-sm font-medium text-indigo-900/70">
-                  Video URL (Optional)
-                </label>
-                <input
-                  type="text"
-                  name="videoUrl"
-                  value={formData.videoUrl}
-                  onChange={handleChange}
-                  placeholder="https://youtube.com/watch?v=... or https://vimeo.com/..."
-                  className="w-full rounded-xl border border-indigo-200 bg-white px-4 py-3 text-black placeholder:text-indigo-900/30 focus:border-[#FFD700] focus:outline-none focus:ring-2 focus:ring-[#FFD700]/20"
-                />
-                <p className="mt-1 text-xs text-indigo-900/40">
-                  Supports YouTube, Vimeo, and other embeddable video platforms
-                </p>
+              {/* Date, Time, Location */}
+              <div className="grid gap-5 md:grid-cols-3">
+                <div>
+                  <label className="mb-2 block text-sm font-medium text-indigo-900/70">Date</label>
+                  <input
+                    type="date"
+                    name="date"
+                    value={formData.date}
+                    onChange={handleChange}
+                    className="w-full rounded-xl border border-indigo-200 bg-white px-4 py-3 text-black focus:border-[#FFD700] focus:outline-none focus:ring-2 focus:ring-[#FFD700]/20"
+                  />
+                </div>
+                <div>
+                  <label className="mb-2 block text-sm font-medium text-indigo-900/70">Time</label>
+                  <input
+                    type="text"
+                    name="time"
+                    value={formData.time}
+                    onChange={handleChange}
+                    placeholder="e.g., 9:00 AM - 5:00 PM"
+                    className="w-full rounded-xl border border-indigo-200 bg-white px-4 py-3 text-black placeholder:text-indigo-900/30 focus:border-[#FFD700] focus:outline-none focus:ring-2 focus:ring-[#FFD700]/20"
+                  />
+                </div>
+                <div>
+                  <label className="mb-2 block text-sm font-medium text-indigo-900/70">Location</label>
+                  <input
+                    type="text"
+                    name="location"
+                    value={formData.location}
+                    onChange={handleChange}
+                    placeholder="e.g., Virtual or Physical Address"
+                    className="w-full rounded-xl border border-indigo-200 bg-white px-4 py-3 text-black placeholder:text-indigo-900/30 focus:border-[#FFD700] focus:outline-none focus:ring-2 focus:ring-[#FFD700]/20"
+                  />
+                </div>
               </div>
 
-              {/* Status and Featured */}
+              {/* Cost and Status */}
               <div className="grid gap-5 md:grid-cols-2">
+                <div>
+                  <label className="mb-2 block text-sm font-medium text-indigo-900/70">Cost (KES)</label>
+                  <input
+                    type="number"
+                    name="cost"
+                    value={formData.cost}
+                    onChange={handleChange}
+                    placeholder="0 for free events"
+                    className="w-full rounded-xl border border-indigo-200 bg-white px-4 py-3 text-black placeholder:text-indigo-900/30 focus:border-[#FFD700] focus:outline-none focus:ring-2 focus:ring-[#FFD700]/20"
+                  />
+                </div>
                 <div>
                   <label className="mb-2 block text-sm font-medium text-indigo-900/70">Status</label>
                   <select
@@ -315,6 +331,10 @@ export default function AdminGalleryForm() {
                     <option value="published">Published</option>
                   </select>
                 </div>
+              </div>
+
+              {/* Featured and Payment Options */}
+              <div className="grid gap-5 md:grid-cols-2">
                 <div className="flex items-center">
                   <label className="flex items-center gap-3 rounded-xl border border-indigo-200 bg-indigo-50/30 px-4 py-3 cursor-pointer hover:border-[#FFD700] transition-colors">
                     <input
@@ -324,7 +344,19 @@ export default function AdminGalleryForm() {
                       onChange={handleChange}
                       className="h-4 w-4 rounded border-indigo-300 text-[#FFD700] focus:ring-[#FFD700]"
                     />
-                    <span className="text-sm font-medium text-indigo-900">Featured gallery</span>
+                    <span className="text-sm font-medium text-indigo-900">Featured event</span>
+                  </label>
+                </div>
+                <div className="flex items-center">
+                  <label className="flex items-center gap-3 rounded-xl border border-indigo-200 bg-indigo-50/30 px-4 py-3 cursor-pointer hover:border-[#FFD700] transition-colors">
+                    <input
+                      type="checkbox"
+                      name="paymentEnabled"
+                      checked={formData.paymentEnabled}
+                      onChange={handleChange}
+                      className="h-4 w-4 rounded border-indigo-300 text-[#FFD700] focus:ring-[#FFD700]"
+                    />
+                    <span className="text-sm font-medium text-indigo-900">Enable payment processing</span>
                   </label>
                 </div>
               </div>
@@ -346,27 +378,54 @@ export default function AdminGalleryForm() {
 
             <div className="space-y-4">
               <MediaUploadButton
-                folder="reena-gore/galleries"
+                folder="reena-gore/events"
                 onUpload={handleCoverUpload}
-                buttonText="Upload Cover Image"
+                onUploadStart={handleCoverUploadStart}
+                buttonText={uploading ? "Uploading..." : "Upload Cover Image"}
+                disabled={uploading}
               />
 
-              {formData.coverImage?.url && (
+              {uploadError && (
+                <div className="rounded-xl border border-red-200 bg-red-50/90 p-3 text-sm text-red-700">
+                  {uploadError}
+                </div>
+              )}
+
+              {uploading && (
+                <div className="flex items-center justify-center py-8">
+                  <div className="flex flex-col items-center gap-2">
+                    <div className="h-8 w-8 animate-spin rounded-full border-2 border-[#FFD700] border-t-transparent"></div>
+                    <p className="text-sm text-indigo-900/60">Uploading image...</p>
+                  </div>
+                </div>
+              )}
+
+              {formData.coverImage?.url && !uploading && (
                 <div className="relative mt-4">
-                  <img
-                    src={formData.coverImage.url}
-                    alt="Cover"
-                    className="h-64 w-full rounded-xl object-cover border border-indigo-200"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setFormData(prev => ({ ...prev, coverImage: emptyImage }))}
-                    className="absolute right-2 top-2 rounded-full bg-red-600 p-1.5 text-white hover:bg-red-700 transition-colors"
-                  >
-                    <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                  </button>
+                  <div className="relative overflow-hidden rounded-xl border border-indigo-200 bg-indigo-50/30">
+                    <img
+                      src={formData.coverImage.url}
+                      alt="Cover"
+                      className="h-64 w-full object-cover"
+                      onError={(e) => {
+                        console.error("Image failed to load:", formData.coverImage.url);
+                        e.target.style.display = "none";
+                        setUploadError("Failed to load image. Please re-upload.");
+                      }}
+                    />
+                  </div>
+                  <div className="flex items-center justify-between mt-3">
+                    <p className="text-xs text-indigo-900/50 truncate max-w-[70%]">
+                      {formData.coverImage.publicId || "Image uploaded"}
+                    </p>
+                    <button
+                      type="button"
+                      onClick={() => setFormData(prev => ({ ...prev, coverImage: emptyImage }))}
+                      className="rounded-lg bg-red-600 px-3 py-1.5 text-xs text-white hover:bg-red-700 transition-colors"
+                    >
+                      Remove
+                    </button>
+                  </div>
                 </div>
               )}
 
@@ -386,7 +445,7 @@ export default function AdminGalleryForm() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                 </svg>
               </div>
-              <h3 className="font-serif text-xl font-semibold text-black">Gallery Description</h3>
+              <h3 className="font-serif text-xl font-semibold text-black">Event Description</h3>
             </div>
 
             <TiptapEditor
@@ -394,90 +453,10 @@ export default function AdminGalleryForm() {
               onChange={(value) =>
                 setFormData((prev) => ({ ...prev, description: value }))
               }
-              placeholder="Write the gallery description, event highlights, and context for the photos..."
-              uploadFolder="reena-gore/galleries"
+              placeholder="Write the event description, agenda, speakers, and other details..."
+              uploadFolder="reena-gore/events"
               minHeight="400px"
             />
-          </div>
-        )}
-
-        {/* Gallery Images Tab */}
-        {activeTab === "gallery" && (
-          <div className="rounded-2xl border border-indigo-100 bg-white p-6 shadow-lg shadow-indigo-900/5">
-            <div className="flex items-center gap-3 mb-6">
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#FFD700]/10">
-                <svg className="h-5 w-5 text-[#FFD700]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                </svg>
-              </div>
-              <h3 className="font-serif text-xl font-semibold text-black">Gallery Images</h3>
-            </div>
-
-            <div className="space-y-5">
-              <MediaUploadButton
-                folder="reena-gore/galleries"
-                onUpload={handleGalleryImageUpload}
-                buttonText="Add Image to Gallery"
-              />
-
-              {formData.images.length > 0 && (
-                <>
-                  <div className="flex items-center justify-between">
-                    <p className="text-sm text-indigo-900/60">
-                      {formData.images.length} image{formData.images.length !== 1 ? 's' : ''} uploaded
-                    </p>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        if (confirm("Remove all images?")) {
-                          setFormData(prev => ({ ...prev, images: [] }));
-                        }
-                      }}
-                      className="text-xs text-red-500 hover:text-red-700 transition-colors"
-                    >
-                      Remove All
-                    </button>
-                  </div>
-
-                  <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                    {formData.images.map((image, index) => (
-                      <div
-                        key={`${image.url}-${index}`}
-                        className="group relative overflow-hidden rounded-xl border border-indigo-200 bg-white p-2 transition-all hover:border-[#FFD700] hover:shadow-lg"
-                      >
-                        <img
-                          src={image.url}
-                          alt={`Gallery ${index + 1}`}
-                          className="h-48 w-full rounded-lg object-cover"
-                        />
-                        <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                          <button
-                            type="button"
-                            onClick={() => removeGalleryImage(index)}
-                            className="rounded-lg bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-700 transition-colors"
-                          >
-                            Remove
-                          </button>
-                        </div>
-                        <div className="absolute bottom-2 right-2 bg-black/70 text-white text-xs px-2 py-1 rounded">
-                          #{index + 1}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </>
-              )}
-
-              {formData.images.length === 0 && (
-                <div className="rounded-xl border border-dashed border-indigo-200 bg-indigo-50/30 p-8 text-center">
-                  <svg className="mx-auto h-12 w-12 text-indigo-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                  </svg>
-                  <p className="mt-2 text-sm text-indigo-900/60">No images uploaded yet</p>
-                  <p className="text-xs text-indigo-900/40">Click "Add Image to Gallery" to upload photos</p>
-                </div>
-              )}
-            </div>
           </div>
         )}
 
@@ -530,9 +509,9 @@ export default function AdminGalleryForm() {
                   Search Preview
                 </p>
                 <div className="space-y-1">
-                  <p className="text-sm text-[#FFD700]">{formData.seoTitle || formData.title || "Gallery Title"}</p>
-                  <p className="text-xs text-indigo-900/40">{window.location.origin}/gallery/{formData.title?.toLowerCase().replace(/\s+/g, '-') || 'gallery-slug'}</p>
-                  <p className="text-xs text-indigo-900/70 line-clamp-2">{formData.seoDescription || "Gallery description will appear here..."}</p>
+                  <p className="text-sm text-[#FFD700]">{formData.seoTitle || formData.title || "Event Title"}</p>
+                  <p className="text-xs text-indigo-900/40">{window.location.origin}/event/{formData.title?.toLowerCase().replace(/\s+/g, '-') || 'event-slug'}</p>
+                  <p className="text-xs text-indigo-900/70 line-clamp-2">{formData.seoDescription || "Event description will appear here..."}</p>
                 </div>
               </div>
             </div>
@@ -543,7 +522,7 @@ export default function AdminGalleryForm() {
         <div className="flex items-center justify-end gap-4">
           <button
             type="button"
-            onClick={() => navigate("/admin/landing-pages/galleries")}
+            onClick={() => navigate("/admin/events")}
             className="rounded-xl border border-indigo-200 bg-white px-6 py-3 text-sm font-medium text-indigo-900 transition-all duration-200 hover:border-[#FFD700] hover:text-[#FFD700]"
           >
             Cancel
@@ -565,7 +544,7 @@ export default function AdminGalleryForm() {
                 </>
               ) : (
                 <>
-                  {isEditMode ? "Update Gallery" : "Create Gallery"}
+                  {isEditMode ? "Update Event" : "Create Event"}
                   <svg className="h-5 w-5 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
                   </svg>

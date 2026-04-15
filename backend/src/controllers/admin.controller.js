@@ -1,96 +1,89 @@
-// const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken");
-
 const Admin = require("../models/Admin");
-const env = require("../config/env");
-const ApiError = require("../utils/ApiError");
-const asyncHandler = require("../utils/asyncHandler");
+const { signAdminToken, getAdminCookieOptions } = require("../utils/adminToken");
 
+const loginAdmin = async (req, res) => {
+  try {
+    const email = req.body.email?.trim()?.toLowerCase();
+    const password = req.body.password;
 
-const signToken = (adminId) => {
-  return jwt.sign({ id: adminId }, env.jwtSecret, {
-    expiresIn: env.jwtExpiresIn || "7d",
-  });
+    if (!email || !password) {
+      return res.status(400).json({
+        success: false,
+        message: "Email and password are required",
+      });
+    }
+
+    const admin = await Admin.findOne({ email, isActive: true }).select("+password");
+
+    if (!admin) {
+      return res.status(401).json({
+        success: false,
+        message: "Invalid email or password",
+      });
+    }
+
+    const isMatch = await admin.comparePassword(password);
+
+    if (!isMatch) {
+      return res.status(401).json({
+        success: false,
+        message: "Invalid email or password",
+      });
+    }
+
+    admin.lastLoginAt = new Date();
+    await admin.save();
+
+    const token = signAdminToken(admin);
+
+    res.cookie("admin_token", token, getAdminCookieOptions());
+
+    return res.status(200).json({
+      success: true,
+      message: "Login successful",
+      data: {
+        admin: {
+          _id: admin._id,
+          fullName: admin.fullName,
+          email: admin.email,
+          role: admin.role,
+        },
+      },
+    });
+  } catch (error) {
+    console.error("loginAdmin error:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Login failed",
+    });
+  }
 };
 
-const loginAdmin = asyncHandler(async (req, res) => {
-  const { email, password } = req.body;
-
-  const admin = await Admin.findOne({ email }).select("+password");
-
-  if (!admin) {
-    throw new ApiError(401, "Invalid credentials");
-  }
-
-  const isMatch = await admin.comparePassword(password);
-
-  if (!isMatch) {
-    throw new ApiError(401, "Invalid credentials");
-  }
-
-  const token = signToken(admin._id);
-
-  res.status(200).json({
-    success: true,
-    message: "Login successful",
-    data: {
-      token,
-      admin: {
-        id: admin._id,
-        fullName: admin.fullName,
-        email: admin.email,
-        role: admin.role,
-      },
-    },
+const logoutAdmin = async (req, res) => {
+  res.clearCookie("admin_token", {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+    path: "/",
   });
-});
 
-
-
-/**
- * LOGOUT
- */
-const logoutAdmin = asyncHandler(async (req, res) => {
-  res.clearCookie(env.adminCookieName);
-
-  res.status(200).json({
+  return res.status(200).json({
     success: true,
     message: "Logged out successfully",
   });
-});
+};
 
-/**
- * CURRENT ADMIN
- */
-const getCurrentAdmin = asyncHandler(async (req, res) => {
-  const admin = req.admin;
-
-  res.status(200).json({
+const getCurrentAdmin = async (req, res) => {
+  return res.status(200).json({
     success: true,
     data: {
-      id: admin._id,
-      fullName: admin.fullName,
-      email: admin.email,
-      role: admin.role,
+      admin: req.admin,
     },
   });
-});
-
-/**
- * GET ALL ADMINS
- */
-const getAllAdmins = asyncHandler(async (req, res) => {
-  const admins = await Admin.find().select("-password");
-
-  res.status(200).json({
-    success: true,
-    data: admins,
-  });
-});
+};
 
 module.exports = {
-    loginAdmin,
-    logoutAdmin,
-    getCurrentAdmin,
-    getAllAdmins,
-  };
+  loginAdmin,
+  logoutAdmin,
+  getCurrentAdmin,
+};

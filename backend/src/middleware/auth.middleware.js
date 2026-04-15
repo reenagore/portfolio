@@ -1,44 +1,54 @@
 const jwt = require("jsonwebtoken");
 const Admin = require("../models/Admin");
-const env = require("../config/env");
-const ApiError = require("../utils/ApiError");
-const asyncHandler = require("../utils/asyncHandler");
 
-const protectAdmin = asyncHandler(async (req, res, next) => {
-  let token = null;
+const protectAdmin = async (req, res, next) => {
+  try {
+    const token = req.cookies?.admin_token;
 
-  if (
-    req.headers.authorization &&
-    req.headers.authorization.startsWith("Bearer ")
-  ) {
-    token = req.headers.authorization.split(" ")[1];
+    if (!token) {
+      return res.status(401).json({
+        success: false,
+        message: "Not authenticated",
+      });
+    }
+
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+    const admin = await Admin.findById(decoded.id).select("-password");
+
+    if (!admin || !admin.isActive) {
+      return res.status(401).json({
+        success: false,
+        message: "Admin account not found or inactive",
+      });
+    }
+
+    req.admin = admin;
+    next();
+  } catch (error) {
+    return res.status(401).json({
+      success: false,
+      message: "Invalid or expired session",
+    });
   }
-
-  if (!token && req.cookies?.[env.adminCookieName]) {
-    token = req.cookies[env.adminCookieName];
-  }
-
-  if (!token) {
-    throw new ApiError(401, "Not authenticated");
-  }
-
-  const decoded = jwt.verify(token, env.jwtSecret);
-
-  const admin = await Admin.findById(decoded.id).select("-password");
-
-  if (!admin) {
-    throw new ApiError(401, "Admin not found");
-  }
-
-  req.admin = admin;
-  next();
-});
+};
 
 const authorizeRoles = (...roles) => {
   return (req, res, next) => {
-    if (!req.admin || !roles.includes(req.admin.role)) {
-      throw new ApiError(403, "Not authorized");
+    if (!req.admin) {
+      return res.status(401).json({
+        success: false,
+        message: "Not authenticated",
+      });
     }
+
+    if (!roles.includes(req.admin.role)) {
+      return res.status(403).json({
+        success: false,
+        message: "Forbidden",
+      });
+    }
+
     next();
   };
 };

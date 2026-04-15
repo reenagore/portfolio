@@ -24,10 +24,7 @@ import PrivacyPolicy from "../pages/Privacy";
 import LandingPagesIndex from "../components/admin/LandinPageIndex";
 import AdminEventsList from "../pages/admin/AdminEventList";
 import AdminEventForm from "../components/admin/AdminEventForm";
-import AdminProductsList from "../pages/admin/AdminProductList";
-import AdminProductForm from "../components/admin/AdminProductForm";
-import AdminGalleriesList from "../pages/admin/AdminGalleryList";
-import AdminGalleryForm from "../components/admin/AdminGalleryForm";
+import AdminGalleryForm from "../pages/admin/AdminGalleryForm";
 import Programs from "../pages/Programs";
 import ProgramDetails from "../pages/ProgramsDetails";
 import AdminProgramRegistrations from "../pages/admin/AdminProgram";
@@ -35,6 +32,10 @@ import Book from "../pages/Book";
 import AdminBookPreorders from "../pages/admin/AdminPreOrder";
 import FinanceForNonFinanceProgramme from "../pages/Finance";
 import ProgrammePaymentVerify from "../pages/ProgramFinanceVerify";
+import Events from "../pages/Events";
+import EventLandingPage from "../pages/EventLandingPage";
+import Gallery from "../pages/Gallery";
+import AdminEventGalleriesList from "../pages/admin/AdminGallery";
 
 
 
@@ -43,7 +44,9 @@ import ProgrammePaymentVerify from "../pages/ProgramFinanceVerify";
 export default function AppRoutes() {
   return (
     <Routes>
+      
       <Route element={<PublicLayout />}>
+        
         <Route path="/" element={<Home />} />
         <Route path="/booking" element={<Booking />} />
         <Route path="/about" element={<About/>}/>
@@ -59,6 +62,10 @@ export default function AppRoutes() {
         <Route path="/my-book" element={<Book/>}/>
         <Route path="/finance" element={<FinanceForNonFinanceProgramme/>}/>
         <Route path="/finance/verify" element={<ProgrammePaymentVerify/> }/>
+        <Route path="/events" element={<Events />} />
+        <Route path="/events/:slug" element={<EventLandingPage />} />
+        <Route path="/gallery" element={<Gallery />} />
+
 
 
         
@@ -78,29 +85,17 @@ export default function AppRoutes() {
           <Route path="/admin/podcasts" element={<AdminPodcasts />} />
           <Route path="/admin/podcasts/new" element={<AdminPodcastForm />} />
           <Route path="/admin/podcasts/:id/edit" element={<AdminPodcastForm />} />
-          
+          <Route path="/admin/galleries" element={<AdminEventGalleriesList/>} />
 
+         
 
-          <Route path="/admin/landing-pages" element={<LandingPagesIndex />} />
+          <Route path="/admin/events" element={<AdminEventsList />} />
+          <Route path="/admin/events/new" element={<AdminEventForm />} />
+          <Route path="/admin/events/:id/edit" element={<AdminEventForm />} />
 
-          <Route path="/admin/landing-pages/events" element={<AdminEventsList />} />
-          <Route path="/admin/landing-pages/events/new" element={<AdminEventForm />} />
+          <Route path="/admin/galleries/new" element={<AdminGalleryForm />} />
           <Route
-            path="/admin/landing-pages/events/:id/edit"
-            element={<AdminEventForm />}
-          />
-
-          <Route path="/admin/landing-pages/products" element={<AdminProductsList />} />
-          <Route path="/admin/landing-pages/products/new" element={<AdminProductForm />} />
-          <Route
-            path="/admin/landing-pages/products/:id/edit"
-            element={<AdminProductForm />}
-          />
-
-          <Route path="/admin/landing-pages/galleries" element={<AdminGalleriesList />} />
-          <Route path="/admin/landing-pages/galleries/new" element={<AdminGalleryForm />} />
-          <Route
-            path="/admin/landing-pages/galleries/:id/edit"
+            path="/admin/galleries/:id/edit"
             element={<AdminGalleryForm />}
           />
           <Route

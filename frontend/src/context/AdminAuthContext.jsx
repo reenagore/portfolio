@@ -1,9 +1,5 @@
-import { createContext, useContext, useEffect, useMemo, useState } from "react";
-import {
-  getCurrentAdmin,
-  loginAdmin,
-  logoutAdmin,
-} from "../services/admin.service";
+import { createContext, useContext, useEffect, useState } from "react";
+import { getCurrentAdmin, loginAdmin, logoutAdmin } from "../services/admin.service";
 
 const AdminAuthContext = createContext(null);
 
@@ -11,10 +7,10 @@ export function AdminAuthProvider({ children }) {
   const [admin, setAdmin] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  const fetchCurrentAdmin = async () => {
+  const loadAdmin = async () => {
     try {
-      const data = await getCurrentAdmin();
-      setAdmin(data.admin || data);
+      const res = await getCurrentAdmin();
+      setAdmin(res?.data?.admin || null);
     } catch {
       setAdmin(null);
     } finally {
@@ -23,13 +19,13 @@ export function AdminAuthProvider({ children }) {
   };
 
   useEffect(() => {
-    fetchCurrentAdmin();
+    loadAdmin();
   }, []);
 
   const login = async (payload) => {
-    const data = await loginAdmin(payload);
-    setAdmin(data.admin || data);
-    return data;
+    const res = await loginAdmin(payload);
+    setAdmin(res?.data?.admin || null);
+    return res;
   };
 
   const logout = async () => {
@@ -37,31 +33,20 @@ export function AdminAuthProvider({ children }) {
     setAdmin(null);
   };
 
-  const value = useMemo(
-    () => ({
-      admin,
-      loading,
-      isAuthenticated: !!admin,
-      login,
-      logout,
-      refreshAdmin: fetchCurrentAdmin,
-    }),
-    [admin, loading]
-  );
-
   return (
-    <AdminAuthContext.Provider value={value}>
+    <AdminAuthContext.Provider
+      value={{
+        admin,
+        loading,
+        login,
+        logout,
+        refreshAdmin: loadAdmin,
+        isAuthenticated: Boolean(admin),
+      }}
+    >
       {children}
     </AdminAuthContext.Provider>
   );
 }
 
-export function useAdminAuth() {
-  const context = useContext(AdminAuthContext);
-
-  if (!context) {
-    throw new Error("useAdminAuth must be used inside AdminAuthProvider");
-  }
-
-  return context;
-}
+export const useAdminAuth = () => useContext(AdminAuthContext);

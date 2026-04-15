@@ -10,7 +10,7 @@ const {
   createEvent,
   updateEvent,
   deleteEvent,
-} = require("../controllers/event.controller");
+} = require("../controllers/eventPage.controller");
 
 const router = express.Router();
 
@@ -29,8 +29,29 @@ router.get("/admin/all", protectAdmin, getAdminEvents);
 router.get("/admin/:id", protectAdmin, getAdminEventById);
 router.get("/:slug", getPublicEventBySlug);
 
-router.post("/", protectAdmin, authorizeRoles("super_admin", "editor"), createRules, validate, createEvent);
-router.put("/:id", protectAdmin, authorizeRoles("super_admin", "editor"), updateRules, validate, updateEvent);
-router.delete("/:id", protectAdmin, authorizeRoles("super_admin"), deleteEvent);
+router.post(
+  "/",
+  protectAdmin,
+  authorizeRoles("super_admin", "editor"),
+  createRules,
+  validate,
+  createEvent
+);
+
+router.put(
+  "/:id",
+  protectAdmin,
+  authorizeRoles("super_admin", "editor"),
+  updateRules,
+  validate,
+  updateEvent
+);
+
+router.delete(
+  "/:id",
+  protectAdmin,
+  authorizeRoles("super_admin"),
+  deleteEvent
+);
 
 module.exports = router;

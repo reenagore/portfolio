@@ -18,9 +18,10 @@ const paymentRoutes = require("./routes/payment.routes");
 const notFound = require("./middleware/notFound.middleware");
 const errorHandler = require("./middleware/error.middleware");
 const { globalLimiter } = require("./middleware/rateLimit.middleware");
-const eventPageRoutes = require("./routes/event.routes");
+const eventPageRoutes = require("./routes/eventPage.routes");
 const productPageRoutes = require("./routes/product.routes");
-const galleryPageRoutes = require("./routes/gallery.routes");
+const eventGalleryRoutes = require("./routes/eventGallery.routes");
+
 const programRegistrationRoutes = require("./routes/programRegistration.routes");
 const bookPreorderRoutes = require("./routes/preorder.routes");
 const programmeOrderRoutes = require("./routes/programOrder.routes");
@@ -38,10 +39,9 @@ app.use(
 app.use(
   cors({
     origin: [
-      "http://localhost:5173",
+      "http://localhost:5174",
       "https://reenagore.net",
-      "https://www.reenagore.net",
-      "https://portfolio-q4y8.onrender.com",
+      "https://www.reenagore.net"
     ],
     credentials: true,
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
@@ -81,7 +81,7 @@ app.use("/api/bookings", bookingRoutes);
 app.use("/api/payments", paymentRoutes);
 app.use("/api/events", eventPageRoutes);
 app.use("/api/products", productPageRoutes);
-app.use("/api/galleries", galleryPageRoutes);
+app.use("/api/event-galleries", eventGalleryRoutes);
 app.use("/api/program-registrations", programRegistrationRoutes);
 app.use("/api/book-preorders", bookPreorderRoutes);
 app.use("/api/programme-orders", programmeOrderRoutes);

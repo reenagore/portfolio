@@ -3,6 +3,9 @@ import { Link, useSearchParams } from "react-router-dom";
 import { verifyProgrammeOrder } from "../services/programOrder.service";
 
 export default function ProgrammePaymentVerify() {
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
   const [params] = useSearchParams();
   const reference = params.get("reference");
 

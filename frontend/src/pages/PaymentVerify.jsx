@@ -4,6 +4,9 @@ import { verifyPayment } from "../services/payment.service";
 import BookingSuccessCard from "../components/bookings/BookingSuccess";
 
 export default function PaymentVerify() {
+  useEffect(() => {
+      window.scrollTo(0, 0);
+    }, []);
   const [searchParams] = useSearchParams();
   const reference = searchParams.get("reference");
 

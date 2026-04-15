@@ -4,6 +4,9 @@ import { getPublicLandingPageBySlug } from "../services/events.service";
 import PurchaseModal from "../components/common/PurchaseModal";
 
 export default function ProductLandingPage() {
+  useEffect(() => {
+      window.scrollTo(0, 0);
+    }, []);
   const { slug } = useParams();
 
   const [page, setPage] = useState(null);
