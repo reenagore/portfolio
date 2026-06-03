@@ -127,7 +127,7 @@ export default function AdminGalleryForm() {
         await createGallery(payload);
       }
 
-      navigate("/admin/landing-pages/galleries");
+      navigate("/admin/galleries");
     } catch (error) {
       alert(error.response?.data?.message || "Failed to save gallery");
     } finally {
