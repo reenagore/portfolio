@@ -14,7 +14,7 @@ const productPageSchema = new mongoose.Schema(
       type: String,
       required: [true, "Title is required"],
       trim: true,
-      maxlength: [180, "Title cannot exceed 180 characters"],
+      maxlength: 180,
     },
     slug: {
       type: String,
@@ -34,6 +34,10 @@ const productPageSchema = new mongoose.Schema(
     cost: {
       type: Number,
       default: 0,
+    },
+    currency: {
+      type: String,
+      default: "KES",
     },
     paymentEnabled: {
       type: Boolean,

@@ -127,7 +127,7 @@ export default function AdminEventForm() {
         await createEvent(payload);
       }
 
-      navigate("/admin/landing-pages/events");
+      navigate("/admin/events");
     } catch (error) {
       console.error("Failed to save event:", error);
       alert(error.response?.data?.message || "Failed to save event");

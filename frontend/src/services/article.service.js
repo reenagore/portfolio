@@ -5,8 +5,13 @@ export const getPublicArticles = async (params = {}) => {
   return data;
 };
 
-export const getAdminArticles = async (params = {}) => {
-  const { data } = await api.get("/articles/admin/all", { params });
+export const getPublicArticleBySlug = async (slug) => {
+  const { data } = await api.get(`/articles/${slug}`);
+  return data;
+};
+
+export const getAdminArticles = async () => {
+  const { data } = await api.get("/articles/admin/all");
   return data;
 };
 
@@ -15,21 +20,13 @@ export const getAdminArticleById = async (id) => {
   return data;
 };
 
-export const createArticle = async (formData) => {
-  const { data } = await api.post("/articles", formData, {
-    headers: {
-      "Content-Type": "multipart/form-data",
-    },
-  });
+export const createArticle = async (payload) => {
+  const { data } = await api.post("/articles", payload);
   return data;
 };
 
-export const updateArticle = async (id, formData) => {
-  const { data } = await api.put(`/articles/${id}`, formData, {
-    headers: {
-      "Content-Type": "multipart/form-data",
-    },
-  });
+export const updateArticle = async (id, payload) => {
+  const { data } = await api.put(`/articles/${id}`, payload);
   return data;
 };
 

@@ -8,11 +8,11 @@ const imageSchema = new mongoose.Schema(
   { _id: false }
 );
 
-const eventGallerySchema = new mongoose.Schema(
+const galleryPageSchema = new mongoose.Schema(
   {
     title: {
       type: String,
-      required: true,
+      required: [true, "Title is required"],
       trim: true,
       maxlength: 180,
     },
@@ -20,16 +20,12 @@ const eventGallerySchema = new mongoose.Schema(
       type: String,
       required: true,
       unique: true,
-      trim: true,
       index: true,
+      trim: true,
     },
     description: {
       type: String,
       default: "",
-    },
-    eventDate: {
-      type: Date,
-      default: null,
     },
     coverImage: {
       type: imageSchema,
@@ -39,14 +35,35 @@ const eventGallerySchema = new mongoose.Schema(
       type: [imageSchema],
       default: [],
     },
+    videoUrl: {
+      type: String,
+      default: "",
+      trim: true,
+    },
     status: {
       type: String,
       enum: ["draft", "published"],
       default: "draft",
       index: true,
     },
+    featured: {
+      type: Boolean,
+      default: false,
+    },
+    seoTitle: {
+      type: String,
+      default: "",
+    },
+    seoDescription: {
+      type: String,
+      default: "",
+    },
+    publishedAt: {
+      type: Date,
+      default: null,
+    },
   },
   { timestamps: true }
 );
 
-module.exports = mongoose.model("EventGallery", eventGallerySchema);
+module.exports = mongoose.model("GalleryPage", galleryPageSchema);

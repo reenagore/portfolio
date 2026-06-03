@@ -1,79 +1,54 @@
 const mongoose = require("mongoose");
 
+const imageSchema = new mongoose.Schema(
+  {
+    url: { type: String, default: "" },
+    publicId: { type: String, default: "" },
+  },
+  { _id: false }
+);
+
 const articleSchema = new mongoose.Schema(
   {
     title: {
       type: String,
       required: [true, "Title is required"],
       trim: true,
-      minlength: [5, "Title must be at least 5 characters"],
-      maxlength: [180, "Title cannot exceed 180 characters"],
+      maxlength: 180,
     },
     slug: {
       type: String,
       required: true,
       unique: true,
-      trim: true,
       index: true,
+      trim: true,
     },
     excerpt: {
       type: String,
-      trim: true,
-      maxlength: [400, "Excerpt cannot exceed 400 characters"],
       default: "",
+      trim: true,
+      maxlength: 500,
     },
     content: {
       type: String,
       required: [true, "Content is required"],
-      minlength: [50, "Content must be at least 50 characters"],
-    },
-    coverImage: {
-      url: {
-        type: String,
-        default: "",
-      },
-      publicId: {
-        type: String,
-        default: "",
-      },
     },
     category: {
       type: String,
-      enum: [
-        "Financial Systems & Cashflow",
-        "Leadership & Decision-Making",
-        "Operations & Efficiency",
-        "SME Growth Strategy",
-        "Market & Economic Insights",
-      ],
-      required: [true, "Category is required"],
+      default: "Financial Systems & Cashflow",
+      index: true,
     },
-    tags: [
-      {
-        type: String,
-        trim: true,
-      },
-    ],
+    coverImage: {
+      type: imageSchema,
+      default: () => ({ url: "", publicId: "" }),
+    },
+    tags: {
+      type: [String],
+      default: [],
+    },
     authorName: {
       type: String,
-      trim: true,
       default: "Reena Gore",
-    },
-    seoTitle: {
-      type: String,
-      trim: true,
-      maxlength: [180, "SEO title cannot exceed 180 characters"],
-      default: "",
-    },
-    seoDescription: {
-      type: String,
-      trim: true,
-      maxlength: [320, "SEO description cannot exceed 320 characters"],
-      default: "",
-    },
-    featured: {
-      type: Boolean,
-      default: false,
     },
     status: {
       type: String,
@@ -81,19 +56,28 @@ const articleSchema = new mongoose.Schema(
       default: "draft",
       index: true,
     },
-    publishedAt: {
-      type: Date,
-      default: null,
+    featured: {
+      type: Boolean,
+      default: false,
+    },
+    seoTitle: {
+      type: String,
+      default: "",
+    },
+    seoDescription: {
+      type: String,
+      default: "",
     },
     readTime: {
       type: Number,
       default: 1,
-      min: 1,
+    },
+    publishedAt: {
+      type: Date,
+      default: null,
     },
   },
-  {
-    timestamps: true,
-  }
+  { timestamps: true }
 );
 
 module.exports = mongoose.model("Article", articleSchema);

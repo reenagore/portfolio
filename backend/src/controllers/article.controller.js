@@ -1,24 +1,33 @@
 const Article = require("../models/Article");
 const ApiError = require("../utils/ApiError");
 const asyncHandler = require("../utils/asyncHandler");
-const { sanitizeValue } = require("../utils/sanitize");
 const slugify = require("../utils/slugify");
-const {
-  uploadToCloudinary,
-  deleteFromCloudinary,
-} = require("../services/cloudinary.service");
+const { sanitizeValue } = require("../utils/sanitize");
 
-const calculateReadTime = (content = "") => {
-  const words = content.trim().split(/\s+/).filter(Boolean).length;
-  return Math.max(1, Math.ceil(words / 200));
+const stripHtml = (html = "") => html.replace(/<[^>]*>/g, "").trim();
+
+const parseJSONField = (value, fallback) => {
+  if (!value) return fallback;
+  if (typeof value === "object") return value;
+
+  try {
+    return JSON.parse(value);
+  } catch {
+    return fallback;
+  }
 };
 
-const ensureUniqueSlug = async (Model, baseSlug, currentId = null) => {
+const calculateReadTime = (html = "") => {
+  const words = stripHtml(html).split(/\s+/).filter(Boolean).length;
+  return Math.max(1, Math.ceil(words / 220));
+};
+
+const ensureUniqueSlug = async (baseSlug, currentId = null) => {
   let slug = baseSlug;
   let counter = 1;
 
   while (true) {
-    const existing = await Model.findOne({ slug });
+    const existing = await Article.findOne({ slug });
 
     if (!existing) return slug;
     if (currentId && existing._id.toString() === currentId.toString()) return slug;
@@ -29,144 +38,79 @@ const ensureUniqueSlug = async (Model, baseSlug, currentId = null) => {
 };
 
 const getPublicArticles = asyncHandler(async (req, res) => {
-  const { category, featured, limit = 20, page = 1, search = "" } = req.query;
+  const { category, featured, search = "" } = req.query;
 
-  const query = {
-    status: "published",
-  };
+  const query = { status: "published" };
 
-  if (category) {
-    query.category = category;
-  }
-
-  if (featured === "true") {
-    query.featured = true;
-  }
+  if (category) query.category = category;
+  if (featured === "true") query.featured = true;
 
   if (search) {
     query.$or = [
       { title: { $regex: search, $options: "i" } },
       { excerpt: { $regex: search, $options: "i" } },
       { content: { $regex: search, $options: "i" } },
-      { tags: { $regex: search, $options: "i" } },
     ];
   }
 
-  const safeLimit = Math.min(Number(limit) || 20, 50);
-  const safePage = Math.max(Number(page) || 1, 1);
-  const skip = (safePage - 1) * safeLimit;
-
-  const [articles, total] = await Promise.all([
-    Article.find(query)
-      .sort({ publishedAt: -1, createdAt: -1 })
-      .skip(skip)
-      .limit(safeLimit),
-    Article.countDocuments(query),
-  ]);
-
-  res.status(200).json({
-    success: true,
-    data: articles,
-    meta: {
-      total,
-      page: safePage,
-      limit: safeLimit,
-      totalPages: Math.ceil(total / safeLimit),
-    },
+  const articles = await Article.find(query).sort({
+    publishedAt: -1,
+    createdAt: -1,
   });
+
+  res.status(200).json({ success: true, data: articles });
 });
 
-const getAdminArticles = asyncHandler(async (req, res) => {
-  const { status, category, search = "" } = req.query;
-
-  const query = {};
-
-  if (status) query.status = status;
-  if (category) query.category = category;
-
-  if (search) {
-    query.$or = [
-      { title: { $regex: search, $options: "i" } },
-      { excerpt: { $regex: search, $options: "i" } },
-    ];
-  }
-
-  const articles = await Article.find(query).sort({ createdAt: -1 });
-
-  res.status(200).json({
-    success: true,
-    data: articles,
-  });
-});
-
-const getArticleBySlug = asyncHandler(async (req, res) => {
+const getPublicArticleBySlug = asyncHandler(async (req, res) => {
   const article = await Article.findOne({
     slug: req.params.slug,
     status: "published",
   });
 
-  if (!article) {
-    throw new ApiError(404, "Article not found");
-  }
+  if (!article) throw new ApiError(404, "Article not found");
 
-  res.status(200).json({
-    success: true,
-    data: article,
-  });
+  res.status(200).json({ success: true, data: article });
+});
+
+const getAdminArticles = asyncHandler(async (req, res) => {
+  const articles = await Article.find().sort({ createdAt: -1 });
+  res.status(200).json({ success: true, data: articles });
 });
 
 const getAdminArticleById = asyncHandler(async (req, res) => {
   const article = await Article.findById(req.params.id);
+  if (!article) throw new ApiError(404, "Article not found");
 
-  if (!article) {
-    throw new ApiError(404, "Article not found");
-  }
-
-  res.status(200).json({
-    success: true,
-    data: article,
-  });
+  res.status(200).json({ success: true, data: article });
 });
 
 const createArticle = asyncHandler(async (req, res) => {
   const body = sanitizeValue(req.body);
 
   const baseSlug = slugify(body.title);
-  if (!baseSlug) {
-    throw new ApiError(400, "A valid title is required to generate slug");
-  }
+  if (!baseSlug) throw new ApiError(400, "A valid title is required");
 
-  const slug = await ensureUniqueSlug(Article, baseSlug);
-  let coverImage = { url: "", publicId: "" };
-
-  if (req.file) {
-    const uploaded = await uploadToCloudinary(req.file.path, "reena-gore/articles");
-    coverImage = {
-      url: uploaded.secure_url,
-      publicId: uploaded.public_id,
-    };
+  if (!stripHtml(body.content) || stripHtml(body.content).length < 50) {
+    throw new ApiError(400, "Article content must be at least 50 characters");
   }
 
   const article = await Article.create({
     title: body.title,
-    slug,
+    slug: await ensureUniqueSlug(baseSlug),
     excerpt: body.excerpt || "",
     content: body.content,
-    category: body.category,
-    tags: Array.isArray(body.tags)
-      ? body.tags.map((tag) => String(tag).trim()).filter(Boolean)
-      : typeof body.tags === "string"
+    category: body.category || "Financial Systems & Cashflow",
+    coverImage: parseJSONField(body.coverImage, { url: "", publicId: "" }),
+    tags: body.tags
       ? body.tags.split(",").map((tag) => tag.trim()).filter(Boolean)
       : [],
     authorName: body.authorName || "Reena Gore",
+    status: body.status || "draft",
+    featured: body.featured === true || body.featured === "true",
     seoTitle: body.seoTitle || "",
     seoDescription: body.seoDescription || "",
-    featured: body.featured === "true" || body.featured === true,
-    status: body.status || "draft",
-    publishedAt:
-      body.status === "published" ? body.publishedAt || new Date() : null,
     readTime: calculateReadTime(body.content),
-    coverImage,
+    publishedAt: body.status === "published" ? new Date() : null,
   });
 
   res.status(201).json({
@@ -178,59 +122,45 @@ const createArticle = asyncHandler(async (req, res) => {
 
 const updateArticle = asyncHandler(async (req, res) => {
   const article = await Article.findById(req.params.id);
-
-  if (!article) {
-    throw new ApiError(404, "Article not found");
-  }
+  if (!article) throw new ApiError(404, "Article not found");
 
   const body = sanitizeValue(req.body);
 
-  let nextSlug = article.slug;
   if (body.title && body.title !== article.title) {
-    const baseSlug = slugify(body.title);
-    nextSlug = await ensureUniqueSlug(Article, baseSlug, article._id);
+    article.title = body.title;
+    article.slug = await ensureUniqueSlug(slugify(body.title), article._id);
   }
 
-  let coverImage = article.coverImage;
-  if (req.file) {
-    if (article.coverImage?.publicId) {
-      await deleteFromCloudinary(article.coverImage.publicId);
+  if (body.content !== undefined) {
+    if (!stripHtml(body.content) || stripHtml(body.content).length < 50) {
+      throw new ApiError(400, "Article content must be at least 50 characters");
     }
 
-    const uploaded = await uploadToCloudinary(req.file.path, "reena-gore/articles");
-    coverImage = {
-      url: uploaded.secure_url,
-      publicId: uploaded.public_id,
-    };
+    article.content = body.content;
+    article.readTime = calculateReadTime(body.content);
   }
 
-  article.title = body.title || article.title;
-  article.slug = nextSlug;
+  if (body.coverImage !== undefined) {
+    article.coverImage = parseJSONField(body.coverImage, article.coverImage);
+  }
+
   article.excerpt = body.excerpt ?? article.excerpt;
-  article.content = body.content || article.content;
-  article.category = body.category || article.category;
-  article.tags = Array.isArray(body.tags)
-    ? body.tags.map((tag) => String(tag).trim()).filter(Boolean)
-    : typeof body.tags === "string"
-    ? body.tags.split(",").map((tag) => tag.trim()).filter(Boolean)
-    : article.tags;
-  article.authorName = body.authorName || article.authorName;
-  article.seoTitle = body.seoTitle ?? article.seoTitle;
-  article.seoDescription = body.seoDescription ?? article.seoDescription;
+  article.category = body.category ?? article.category;
+  article.tags =
+    body.tags !== undefined
+      ? body.tags.split(",").map((tag) => tag.trim()).filter(Boolean)
+      : article.tags;
+  article.authorName = body.authorName ?? article.authorName;
+  article.status = body.status || article.status;
   article.featured =
     body.featured !== undefined
-      ? body.featured === "true" || body.featured === true
+      ? body.featured === true || body.featured === "true"
       : article.featured;
-  article.status = body.status || article.status;
-  article.coverImage = coverImage;
-  article.readTime = calculateReadTime(article.content);
+  article.seoTitle = body.seoTitle ?? article.seoTitle;
+  article.seoDescription = body.seoDescription ?? article.seoDescription;
 
   if (article.status === "published" && !article.publishedAt) {
     article.publishedAt = new Date();
-  }
-
-  if (body.publishedAt) {
-    article.publishedAt = body.publishedAt;
   }
 
   await article.save();
@@ -244,14 +174,7 @@ const updateArticle = asyncHandler(async (req, res) => {
 
 const deleteArticle = asyncHandler(async (req, res) => {
   const article = await Article.findById(req.params.id);
-
-  if (!article) {
-    throw new ApiError(404, "Article not found");
-  }
-
-  if (article.coverImage?.publicId) {
-    await deleteFromCloudinary(article.coverImage.publicId);
-  }
+  if (!article) throw new ApiError(404, "Article not found");
 
   await article.deleteOne();
 
@@ -263,8 +186,8 @@ const deleteArticle = asyncHandler(async (req, res) => {
 
 module.exports = {
   getPublicArticles,
+  getPublicArticleBySlug,
   getAdminArticles,
-  getArticleBySlug,
   getAdminArticleById,
   createArticle,
   updateArticle,

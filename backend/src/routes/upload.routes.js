@@ -8,12 +8,10 @@ const {
 
 const router = express.Router();
 
-router.post(
-  "/",
-  protectAdmin,
-  authorizeRoles("super_admin", "editor"),
-  upload.single("image"),
-  uploadImage
-);
+const adminOnly = [protectAdmin, authorizeRoles("super_admin", "editor")];
+
+router.post("/", ...adminOnly, upload.single("image"), uploadImage);
+
+router.post("/image", ...adminOnly, upload.single("image"), uploadImage);
 
 module.exports = router;

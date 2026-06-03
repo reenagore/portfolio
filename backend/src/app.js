@@ -19,12 +19,12 @@ const notFound = require("./middleware/notFound.middleware");
 const errorHandler = require("./middleware/error.middleware");
 const { globalLimiter } = require("./middleware/rateLimit.middleware");
 const eventPageRoutes = require("./routes/eventPage.routes");
-const productPageRoutes = require("./routes/product.routes");
-const eventGalleryRoutes = require("./routes/eventGallery.routes");
+const galleryPageRoutes = require("./routes/galleryPage.routes");
 
 const programRegistrationRoutes = require("./routes/programRegistration.routes");
 const bookPreorderRoutes = require("./routes/preorder.routes");
 const programmeOrderRoutes = require("./routes/programOrder.routes");
+const productRoutes = require("./routes/product.routes");
 
 const app = express();
 
@@ -39,7 +39,7 @@ app.use(
 app.use(
   cors({
     origin: [
-      "http://localhost:5174",
+      "http://localhost:5173",
       "https://reenagore.net",
       "https://www.reenagore.net"
     ],
@@ -74,14 +74,22 @@ if (!env.isProduction) {
 app.use("/api/health", healthRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/contacts", contactRoutes);
+
 app.use("/api/articles", articleRoutes);
 app.use("/api/podcasts", podcastRoutes);
+
+
 app.use("/api/uploads", uploadRoutes);
 app.use("/api/bookings", bookingRoutes);
 app.use("/api/payments", paymentRoutes);
 app.use("/api/events", eventPageRoutes);
-app.use("/api/products", productPageRoutes);
-app.use("/api/event-galleries", eventGalleryRoutes);
+app.use("/api/products", productRoutes);
+
+
+app.use("/api/galleries", galleryPageRoutes);
+
+
+
 app.use("/api/program-registrations", programRegistrationRoutes);
 app.use("/api/book-preorders", bookPreorderRoutes);
 app.use("/api/programme-orders", programmeOrderRoutes);
