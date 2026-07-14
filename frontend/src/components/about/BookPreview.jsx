@@ -87,8 +87,7 @@ export default function BookPreviewSection() {
 
             {/* CTA Buttons */}
             <div className="mt-10 flex  gap-4 sm:flex-row">
-              <Link
-                to="/my-book"
+              <a href=" https://decodingbusinessgrowth.tiiny.site/"
                 className="group relative overflow-hidden justify-center text-sm align-center rounded-xl bg-gradient-to-r from-indigo-900 to-black px-8 py-4 text-sm font-medium text-[#FFD700] transition-all duration-300 hover:shadow-lg hover:shadow-[#FFD700]/20"
               >
                 <span className="relative z-10 flex items-center gap-2">
@@ -98,13 +97,13 @@ export default function BookPreviewSection() {
                   </svg>
                 </span>
                 <div className="absolute inset-0 -translate-x-full transform bg-gradient-to-r from-transparent via-[#FFD700]/10 to-transparent transition-transform duration-1000 group-hover:translate-x-full"></div>
-              </Link>
+              </a>
 
               <a
-                href="/my-book#preorder"
+                href=" https://decodingbusinessgrowth.tiiny.site/#order"
                 className="group inline-flex items-center text-sm justify-center rounded-xl border border-indigo-200 bg-white/80 px-8 py-4 text-sm font-medium text-indigo-900 backdrop-blur-sm transition-all duration-200 hover:border-[#FFD700] hover:text-[#FFD700] hover:shadow-lg hover:shadow-[#FFD700]/10"
               >
-                Pre-order Now
+                Get Your Copy Now
                 <svg className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
                 </svg>
@@ -117,7 +116,7 @@ export default function BookPreviewSection() {
                 <svg className="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                 </svg>
-                Coming Q2 2024
+                09 July 2026
               </span>
               <span className="h-3 w-px bg-indigo-200"></span>
               <span className="flex items-center gap-1">
