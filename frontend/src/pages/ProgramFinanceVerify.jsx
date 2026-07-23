@@ -20,7 +20,7 @@ export default function ProgrammePaymentVerify() {
           success: res?.data?.paymentStatus === "paid",
           data: res?.data,
         });
-      } catch (error) {
+      } catch {
         setResult({
           success: false,
           data: null,

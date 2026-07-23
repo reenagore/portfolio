@@ -98,7 +98,7 @@ export default function ServicesDetails() {
 
         {/* Service Cards */}
         <div className="space-y-8 lg:space-y-12">
-          {serviceDetails.map((service, index) => (
+          {serviceDetails.map((service) => (
             <div
               key={service.title}
               className="group relative overflow-hidden rounded-3xl border border-indigo-100 bg-white/80 p-6 backdrop-blur-sm transition-all duration-500 hover:border-[#FFD700] hover:shadow-2xl hover:shadow-[#FFD700]/10 md:p-8 lg:grid lg:grid-cols-[1.1fr_0.9fr] lg:gap-8"

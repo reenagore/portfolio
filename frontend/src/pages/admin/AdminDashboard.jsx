@@ -208,7 +208,7 @@ export default function AdminDashboard() {
 
       {/* Stats Cards Grid */}
       <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-4">
-        {cards.map((card, index) => (
+        {cards.map((card) => (
           <Link
             key={card.title}
             to={card.link}
@@ -289,7 +289,7 @@ export default function AdminDashboard() {
             
             <div className="mt-6 space-y-3">
               {recentActivity.length > 0 ? (
-                recentActivity.map((activity, index) => (
+                recentActivity.map((activity) => (
                   <div
                     key={`${activity.type}-${activity.id}`}
                     className="group flex items-start gap-4 rounded-xl border border-transparent p-3 transition-all duration-200 hover:border-indigo-100 hover:bg-indigo-50/50"

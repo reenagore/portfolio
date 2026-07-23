@@ -1,12 +1,12 @@
 import { NavLink, useNavigate } from "react-router-dom";
-import { useAdminAuth } from "../../context/AdminAuthContext";
+import { useAdminAuth } from "../../context/useAdminAuth";
 import { useState } from "react";
 
 const navItems = [
   { 
     name: "Dashboard", 
     path: "/admin",
-    icon: (isActive) => (
+    icon: () => (
       <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z"></path>
       </svg>
@@ -15,7 +15,7 @@ const navItems = [
   { 
     name: "Bookings", 
     path: "/admin/bookings",
-    icon: (isActive) => (
+    icon: () => (
       <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
       </svg>
@@ -24,7 +24,7 @@ const navItems = [
   { 
     name: "Payments", 
     path: "/admin/payments",
-    icon: (isActive) => (
+    icon: () => (
       <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"></path>
       </svg>
@@ -33,7 +33,7 @@ const navItems = [
   { 
     name: "Articles", 
     path: "/admin/articles",
-    icon: (isActive) => (
+    icon: () => (
       <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 12h8v8H7v-8z"></path>
       </svg>
@@ -43,7 +43,7 @@ const navItems = [
   {
     name: "Events",
     path: "/admin/events",
-    icon: (isActive) => (
+    icon: () => (
       <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
       </svg>
@@ -53,7 +53,7 @@ const navItems = [
   {
     name: "Gallery",
     path: "/admin/galleries",
-    icon: (isActive) => (
+    icon: () => (
       <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L20 16M6 10h.01M10 6h.01M14 10h.01M18 6h.01M3 16v-5h18v5M3 7v5h18V7"></path>
       </svg>
@@ -63,7 +63,7 @@ const navItems = [
   {
     name: "Products",
     path: "/admin/products",
-    icon: (isActive) => (
+    icon: () => (
       <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path>
       </svg>
@@ -73,7 +73,7 @@ const navItems = [
   { 
     name: "Book Preorders", 
     path: "/admin/book-preorders",
-    icon: (isActive) => (
+    icon: () => (
       <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 12h8v8H7v-8z"></path>
       </svg>
@@ -85,7 +85,7 @@ const navItems = [
   { 
     name: "Programs", 
     path: "/admin/programs",
-    icon: (isActive) => (
+    icon: () => (
       <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 12h8v8H7v-8z"></path>
       </svg>
@@ -94,7 +94,7 @@ const navItems = [
   { 
     name: "Podcasts", 
     path: "/admin/podcasts",
-    icon: (isActive) => (
+    icon: () => (
       <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"></path>
       </svg>
@@ -103,7 +103,7 @@ const navItems = [
   // { 
   //   name: "Landing Pages", 
   //   path: "/admin/landing-pages",
-  //   icon: (isActive) => (
+  //   icon: () => (
   //     <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
   //       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 12h8v8H7v-8z"></path>
   //     </svg>

@@ -30,6 +30,12 @@ const app = express();
 
 app.set("trust proxy", 1);
 
+const allowedOrigins = new Set(env.clientUrls);
+
+if (!env.isProduction) {
+  allowedOrigins.add("http://localhost:5173");
+}
+
 app.use(
   helmet({
     crossOriginResourcePolicy: { policy: "cross-origin" },
@@ -38,11 +44,13 @@ app.use(
 
 app.use(
   cors({
-    origin: [
-      "http://localhost:5173",
-      "https://reenagore.net",
-      "https://www.reenagore.net"
-    ],
+    origin(origin, callback) {
+      if (!origin || allowedOrigins.has(origin)) {
+        return callback(null, true);
+      }
+
+      return callback(new Error(`CORS blocked for origin: ${origin}`));
+    },
     credentials: true,
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
   })

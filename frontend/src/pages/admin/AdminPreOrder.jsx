@@ -26,15 +26,18 @@ export default function AdminBookPreorders() {
   const [statusFilter, setStatusFilter] = useState("");
   const [paymentFilter, setPaymentFilter] = useState("");
 
-  const fetchItems = async () => {
+  const fetchItems = async ({
+    searchValue = search,
+    statusValue = statusFilter,
+    paymentValue = paymentFilter,
+  } = {}) => {
     try {
       setLoading(true);
       const res = await getAdminBookPreorders();
       let allItems = res.data || [];
 
-      // Apply filters
-      if (search.trim()) {
-        const query = search.trim().toLowerCase();
+      if (searchValue.trim()) {
+        const query = searchValue.trim().toLowerCase();
         allItems = allItems.filter((item) => {
           return (
             item.fullName?.toLowerCase().includes(query) ||
@@ -46,12 +49,12 @@ export default function AdminBookPreorders() {
         });
       }
 
-      if (statusFilter) {
-        allItems = allItems.filter((item) => item.status === statusFilter);
+      if (statusValue) {
+        allItems = allItems.filter((item) => item.status === statusValue);
       }
 
-      if (paymentFilter) {
-        allItems = allItems.filter((item) => item.paymentStatus === paymentFilter);
+      if (paymentValue) {
+        allItems = allItems.filter((item) => item.paymentStatus === paymentValue);
       }
 
       setItems(allItems);
@@ -63,7 +66,19 @@ export default function AdminBookPreorders() {
   };
 
   useEffect(() => {
-    fetchItems();
+    const loadInitialItems = async () => {
+      try {
+        setLoading(true);
+        const res = await getAdminBookPreorders();
+        setItems(res.data || []);
+      } catch (error) {
+        console.error("Failed to fetch book pre-orders:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadInitialItems();
   }, []);
 
   const handleSearchSubmit = (e) => {
@@ -75,7 +90,7 @@ export default function AdminBookPreorders() {
     setSearch("");
     setStatusFilter("");
     setPaymentFilter("");
-    setTimeout(() => fetchItems(), 0);
+    fetchItems({ searchValue: "", statusValue: "", paymentValue: "" });
   };
 
   const handleStatusUpdate = async (id, nextStatus, currentPaymentStatus) => {
@@ -162,7 +177,14 @@ export default function AdminBookPreorders() {
       {/* Status Stats - Order Status */}
       <div className="flex flex-wrap gap-3">
         <button
-          onClick={() => setStatusFilter("")}
+          onClick={() => {
+            setStatusFilter("");
+            fetchItems({
+              searchValue: search,
+              statusValue: "",
+              paymentValue: paymentFilter,
+            });
+          }}
           className={`rounded-lg px-4 py-2 text-sm font-medium transition-all duration-200 ${
             statusFilter === ""
               ? "bg-gradient-to-r from-[#FFD700] to-[#FFD700]/90 text-black shadow-md shadow-[#FFD700]/20"
@@ -174,7 +196,14 @@ export default function AdminBookPreorders() {
         {statusOptions.map((option) => (
           <button
             key={option.value}
-            onClick={() => setStatusFilter(option.value)}
+            onClick={() => {
+              setStatusFilter(option.value);
+              fetchItems({
+                searchValue: search,
+                statusValue: option.value,
+                paymentValue: paymentFilter,
+              });
+            }}
             className={`rounded-lg px-4 py-2 text-sm font-medium capitalize transition-all duration-200 ${
               statusFilter === option.value
                 ? "bg-gradient-to-r from-[#FFD700] to-[#FFD700]/90 text-black shadow-md shadow-[#FFD700]/20"
@@ -191,7 +220,14 @@ export default function AdminBookPreorders() {
         {paymentStatusOptions.map((option) => (
           <button
             key={option.value}
-            onClick={() => setPaymentFilter(option.value)}
+            onClick={() => {
+              setPaymentFilter(option.value);
+              fetchItems({
+                searchValue: search,
+                statusValue: statusFilter,
+                paymentValue: option.value,
+              });
+            }}
             className={`rounded-lg px-4 py-2 text-sm font-medium capitalize transition-all duration-200 ${
               paymentFilter === option.value
                 ? "bg-gradient-to-r from-[#FFD700] to-[#FFD700]/90 text-black shadow-md shadow-[#FFD700]/20"

@@ -32,27 +32,6 @@ export default function AboutApproach() {
     }
   ];
 
-  const fpoElements = [
-    {
-      name: "Finance",
-      color: "from-amber-500 to-orange-500",
-      description: "Visibility, discipline, and control",
-      icon: "💰"
-    },
-    {
-      name: "People",
-      color: "from-indigo-600 to-indigo-800",
-      description: "Accountability, alignment, execution",
-      icon: "👥"
-    },
-    {
-      name: "Operations",
-      color: "from-[#FFD700] to-amber-600",
-      description: "Systems, flow, scalability",
-      icon: "⚙️"
-    }
-  ];
-
   return (
     <section className="relative overflow-hidden bg-gradient-to-br from-white via-indigo-50/20 to-white">
       {/* Background decorative elements */}

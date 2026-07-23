@@ -52,14 +52,12 @@ export default function BookingForm() {
   
     try {
       const bookingRes = await submitBooking(formData);
-        console.log("BOOKING RESPONSE:", bookingRes);
 
-        const bookingId = bookingRes?.data?.id;
-        console.log("BOOKING ID:", bookingId);
+      const bookingId = bookingRes?.data?.id;
 
-        if (!bookingId) {
-          throw new Error("Booking created but booking ID was not returned.");
-        }
+      if (!bookingId) {
+        throw new Error("Booking created but booking ID was not returned.");
+      }
       setStepMessage("Initializing payment...");
   
       const paymentRes = await initializePayment({
@@ -71,12 +69,9 @@ export default function BookingForm() {
         service: formData.service,
         bookingId,
       });
-      
-      console.log("PAYMENT RESPONSE:", paymentRes);
-      
+
       const authorizationUrl = paymentRes?.data?.authorizationUrl;
-      console.log("AUTH URL:", authorizationUrl);
-      
+
       if (!authorizationUrl) {
         throw new Error("Payment initialized but authorization URL is missing.");
       }

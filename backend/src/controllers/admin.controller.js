@@ -1,4 +1,5 @@
 const Admin = require("../models/Admin");
+const env = require("../config/env");
 const { signAdminToken, getAdminCookieOptions } = require("../utils/adminToken");
 
 const loginAdmin = async (req, res) => {
@@ -36,7 +37,7 @@ const loginAdmin = async (req, res) => {
 
     const token = signAdminToken(admin);
 
-    res.cookie("admin_token", token, getAdminCookieOptions());
+    res.cookie(env.adminCookieName, token, getAdminCookieOptions());
 
     return res.status(200).json({
       success: true,
@@ -60,10 +61,10 @@ const loginAdmin = async (req, res) => {
 };
 
 const logoutAdmin = async (req, res) => {
-  res.clearCookie("admin_token", {
+  res.clearCookie(env.adminCookieName, {
     httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+    secure: env.isProduction,
+    sameSite: env.isProduction ? "none" : "lax",
     path: "/",
   });
 

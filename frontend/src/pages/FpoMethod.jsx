@@ -202,7 +202,7 @@ export default function FpoMethod() {
           </div>
 
           <div className="grid gap-8 lg:grid-cols-3">
-            {pillars.map((pillar, index) => (
+            {pillars.map((pillar) => (
               <div
                 key={pillar.title}
                 className="group relative overflow-hidden rounded-2xl bg-white shadow-xl transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl"
@@ -374,7 +374,7 @@ export default function FpoMethod() {
           </div>
 
           <div className="mt-8 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-            {outcomes.map((item, index) => (
+            {outcomes.map((item) => (
               <div
                 key={item}
                 className="group relative overflow-hidden rounded-xl border border-white/10 bg-white/5 p-6 backdrop-blur-sm transition-all duration-300 hover:bg-white/10 hover:border-[#FFD700]/50"

@@ -4,21 +4,21 @@ import { Link } from "react-router-dom";
 export default function FloatingEventIcon() {
   const [isVisible, setIsVisible] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
-  const [hasBeenClosed, setHasBeenClosed] = useState(false);
+  const [hasBeenClosed, setHasBeenClosed] = useState(
+    () => localStorage.getItem("eventPopupClosed") === "true"
+  );
 
   useEffect(() => {
-    // Check if user has closed the popup before
-    const popupClosed = localStorage.getItem("eventPopupClosed");
-    if (!popupClosed) {
-      // Show popup after 3 seconds
-      const timer = setTimeout(() => {
-        setIsVisible(true);
-      }, 3000);
-      return () => clearTimeout(timer);
-    } else {
-      setHasBeenClosed(true);
+    if (hasBeenClosed) {
+      return undefined;
     }
-  }, []);
+
+    const timer = setTimeout(() => {
+      setIsVisible(true);
+    }, 3000);
+
+    return () => clearTimeout(timer);
+  }, [hasBeenClosed]);
 
   const handleClose = () => {
     setIsVisible(false);

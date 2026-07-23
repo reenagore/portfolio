@@ -1,4 +1,5 @@
 const jwt = require("jsonwebtoken");
+const env = require("../config/env");
 
 const signAdminToken = (admin) => {
   return jwt.sign(
@@ -7,20 +8,18 @@ const signAdminToken = (admin) => {
       role: admin.role,
       email: admin.email,
     },
-    process.env.JWT_SECRET,
+    env.jwtSecret,
     {
-      expiresIn: process.env.JWT_EXPIRES_IN || "7d",
+      expiresIn: env.jwtExpiresIn || "7d",
     }
   );
 };
 
 const getAdminCookieOptions = () => {
-  const isProduction = process.env.NODE_ENV === "production";
-
   return {
     httpOnly: true,
-    secure: isProduction,
-    sameSite: isProduction ? "none" : "lax",
+    secure: env.isProduction,
+    sameSite: env.isProduction ? "none" : "lax",
     maxAge: 7 * 24 * 60 * 60 * 1000,
     path: "/",
   };

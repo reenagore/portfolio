@@ -2,6 +2,12 @@ const dotenv = require("dotenv");
 
 dotenv.config();
 
+const parseCsv = (value) =>
+  value
+    .split(",")
+    .map((item) => item.trim())
+    .filter(Boolean);
+
 const requiredEnvVars = [
   "NODE_ENV",
   "PORT",
@@ -36,6 +42,7 @@ const env = {
   nodeEnv: process.env.NODE_ENV,
   port: Number(process.env.PORT) || 5000,
   clientUrl: process.env.CLIENT_URL,
+  clientUrls: parseCsv(process.env.CLIENT_URL),
   mongoUri: process.env.MONGODB_URI,
   resendApiKey: process.env.RESEND_API_KEY,
   resendFromEmail: process.env.RESEND_FROM_EMAIL,

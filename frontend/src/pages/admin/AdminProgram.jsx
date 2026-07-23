@@ -21,13 +21,16 @@ export default function AdminProgramRegistrations() {
   const [selectedRegistration, setSelectedRegistration] = useState(null);
   const [showDetailsModal, setShowDetailsModal] = useState(false);
 
-  const fetchItems = async () => {
+  const fetchItems = async ({
+    searchValue = search,
+    statusValue = statusFilter,
+  } = {}) => {
     try {
       setLoading(true);
 
       const res = await getAdminProgramRegistrations({
-        ...(search.trim() ? { search: search.trim() } : {}),
-        ...(statusFilter ? { status: statusFilter } : {}),
+        ...(searchValue.trim() ? { search: searchValue.trim() } : {}),
+        ...(statusValue ? { status: statusValue } : {}),
       });
 
       setItems(res.data || []);
@@ -39,7 +42,19 @@ export default function AdminProgramRegistrations() {
   };
 
   useEffect(() => {
-    fetchItems();
+    const loadInitialItems = async () => {
+      try {
+        setLoading(true);
+        const res = await getAdminProgramRegistrations();
+        setItems(res.data || []);
+      } catch (error) {
+        console.error("Failed to fetch program registrations:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadInitialItems();
   }, []);
 
   const handleStatusChange = async (id, status) => {
@@ -281,7 +296,10 @@ export default function AdminProgramRegistrations() {
       {/* Status Stats */}
       <div className="flex flex-wrap gap-3">
         <button
-          onClick={() => setStatusFilter("")}
+          onClick={() => {
+            setStatusFilter("");
+            fetchItems({ searchValue: search, statusValue: "" });
+          }}
           className={`rounded-lg px-4 py-2 text-sm font-medium transition-all duration-200 ${
             statusFilter === ""
               ? "bg-gradient-to-r from-[#FFD700] to-[#FFD700]/90 text-black shadow-md shadow-[#FFD700]/20"
@@ -293,7 +311,10 @@ export default function AdminProgramRegistrations() {
         {statusOptions.map((option) => (
           <button
             key={option.value}
-            onClick={() => setStatusFilter(option.value)}
+            onClick={() => {
+              setStatusFilter(option.value);
+              fetchItems({ searchValue: search, statusValue: option.value });
+            }}
             className={`rounded-lg px-4 py-2 text-sm font-medium capitalize transition-all duration-200 ${
               statusFilter === option.value
                 ? "bg-gradient-to-r from-[#FFD700] to-[#FFD700]/90 text-black shadow-md shadow-[#FFD700]/20"
@@ -401,7 +422,7 @@ export default function AdminProgramRegistrations() {
                 onClick={() => {
                   setSearch("");
                   setStatusFilter("");
-                  fetchItems();
+                  fetchItems({ searchValue: "", statusValue: "" });
                 }}
                 className="mt-4 text-sm text-[#FFD700] hover:underline"
               >
