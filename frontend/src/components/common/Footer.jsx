@@ -45,9 +45,10 @@ export default function Footer() {
             {/* Social links with golden hover */}
             <div className="mt-6 flex items-center gap-3 sm:gap-4">
               {[
-                { href: "#", icon: "linkedin", label: "LinkedIn" },
-                { href: "#", icon: "twitter", label: "Twitter" },
-                { href: "#", icon: "instagram", label: "Instagram" },
+                { href: "https://www.linkedin.com/in/reena-gore-884a73178/", icon: "linkedin", label: "LinkedIn" },
+                { href: "https://www.facebook.com/share/1D4xoz9Wez/?mibextid=wwXIfr", icon: "facebook", label: "Facebook" },
+                {href: "https://www.tiktok.com/@growwithreena?_r=1&_t=ZS-9830ndMT8P1", icon: "tiktok", label: "TikTok" },
+                { href: "https://www.instagram.com/reenagore_official?igsh=YWJxeHJnb2p3bmd6", icon: "instagram", label: "Instagram" },
               ].map((social) => (
                 <a 
                   key={social.label}
